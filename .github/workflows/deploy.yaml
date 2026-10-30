@@ -12,7 +12,7 @@ jobs:
       - name: Récupérer le code source
         uses: actions/checkout@v4
 
-      - name: Déployer l'application Homepage sur Kubernetes
+      - name: Déployer toutes les applications sur Kubernetes
         run: |
-          microk8s kubectl apply -r -f apps/homepage/
+          microk8s kubectl apply -r -f apps/
           microk8s kubectl rollout restart deployment homepage-deployment
