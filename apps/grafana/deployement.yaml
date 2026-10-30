@@ -21,7 +21,7 @@ spec:
         - containerPort: 3000
         env:
         - name: GF_SERVER_ROOT_URL
-          value: "http://192.168.2.136"
+          value: "http://192.168.2.136:30090"
         - name: GF_SERVER_SERVE_FROM_SUB_PATH
           value: "false"
         resources:
