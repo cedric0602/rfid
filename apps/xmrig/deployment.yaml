@@ -18,9 +18,9 @@ spec:
     spec:
       containers:
       - name: xmrig
-        image: mineros/xmrig:latest
+        image: xmrig/xmrig:latest
         args:
-        - "--url=//supportxmr.com"
+        - "--url=pool.supportxmr.com:443"
         - "--user=41w7BeBLFZ5XrYuG4wSDjDED65RV5xgph5JEfFmnHYtBSXz6cdUSHxcFjPYudyME5x8bH9eAiAxob4MCMzktjSmRFJA6zpL"
         - "--rig-id=serveur-asus"
         - "--donate-level=1"
