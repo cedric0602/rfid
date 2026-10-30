@@ -27,7 +27,7 @@ data:
         - Grafana Monitoring:
             icon: grafana.svg
             href: http://192.168.2.136:30080
-            description: "Suivi et métriques de mon serveur plop"
+            description: "Suivi et métriques de mon serveur plop  ds"
 
 
   bookmarks.yaml: |
