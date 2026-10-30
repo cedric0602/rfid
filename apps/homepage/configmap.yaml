@@ -6,29 +6,42 @@ metadata:
 data:
   settings.yaml: |
     title: "Mon Serveur Asus plop"
-    background:
-      image: https://unsplash.com
+    # Utilise une vraie image Unsplash de background (ici une vue abstraite de serveur/tech)
+    background: https://unsplash.com
     theme: dark
-  
-  # ... (votre bloc settings reste identique)
+    # Amélioration de la mise en page (grille compacte et élégante)
+    layout:
+      Infrastructure:
+        style: columns
+        columns: 1
+      Outils:
+        style: columns
+        columns: 3
+
   services.yaml: |
     - Infrastructure:
         - Kubernetes Cluster:
-            icon: kubernetes.svg
+            # Utilisation de l'API d'icônes intégrée (plus propre que les .svg locaux manquants)
+            icon: si-kubernetes
             href: http://192.168.2.136:30080
-            description: "Statut du cluster MicroK8s cedric"
-            
+            description: "Statut du cluster MicroK8s"
+            # Intégration du widget natif Kubernetes pour afficher l'état du cluster en direct
+            widget:
+              type: kubernetes
+              url: http://192.168.2.136:30080
+
     - Outils:
         - GitHub Repository:
-            icon: github.svg
+            icon: si-github
             href: https://github.com
             description: "Mon code source et mes fichiers YAML"
         - Grafana Monitoring:
-            icon: grafana.svg
+            icon: si-grafana
             href: http://192.168.2.136:30090
             description: "Suivi et métriques de mon serveur"
+            # Widget Grafana optionnel pour l'état de l'app si configuré
         - Monero Mining Pool:
-            icon: monero.svg
+            icon: si-monero
             href: https://supportxmr.com
             description: "Suivi des gains et du hashrate de l'Asus"
 
@@ -36,3 +49,4 @@ data:
     - Favoris:
         - Google:
             - href: https://google.com
+              icon: si-google
