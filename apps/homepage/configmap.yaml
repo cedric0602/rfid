@@ -57,7 +57,7 @@ data:
             # AJOUT DU WIDGET ICI : 
             widget:
               type: prometheusmetric
-              url: http://cluster.local
+              url: http://192.168.2.136:9090
               metrics:
                 - label: "Temp. CPU"
                   query: "node_hwmon_temp_celsius"
