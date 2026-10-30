@@ -1,0 +1,17 @@
+name: CI/CD Auto-Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Récupérer le code source
+        uses: actions/checkout@v4
+
+      - name: Déployer l'application Homepage sur Kubernetes
+        run: |
+          kubectl apply -f apps/homepage/

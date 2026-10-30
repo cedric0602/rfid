@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: homepage-config
+  namespace: default
+data:
+  settings.yaml: |
+    title: "Mon Serveur Asus"
+    background:
+      image: https://unsplash.com
+    theme: dark
+  
+  services.yaml: |
+    - Infrastructure:
+        - Kubernetes Cluster:
+            icon: kubernetes.svg
+            href: http://192.168.2.136
+            description: "Statut du cluster MicroK8s"
+            
+    - Outils:
+        - GitHub Repository:
+            icon: github.svg
+            href: https://github.com
+            description: "Mon code source et mes fichiers YAML"
+
+  bookmarks.yaml: |
+    - Favoris:
+        - Google:
+            - href: https://google.com
