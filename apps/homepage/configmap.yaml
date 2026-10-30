@@ -6,9 +6,11 @@ metadata:
 data:
   settings.yaml: |
     title: "Mon Serveur Asus plop"
-    # Utilisation d'un arrière-plan sombre moderne
     background: https://unsplash.com
     theme: dark
+    # RECORRECTION ICI : On dit à Homepage d'afficher les widgets dans le bandeau du haut (header)
+    header:
+      showOptionalWidgets: true
     layout:
       Infrastructure:
         style: columns
