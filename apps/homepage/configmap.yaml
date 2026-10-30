@@ -34,11 +34,12 @@ data:
             icon: github.svg
             href: https://github.com
             description: "Mon code source et mes fichiers YAML"
+            
         - Grafana Monitoring:
             icon: grafana.svg
             href: http://192.168.2
             description: "Suivi et métriques de mon serveur"
-            
+
   bookmarks.yaml: |
     - Favoris:
         - Google:
