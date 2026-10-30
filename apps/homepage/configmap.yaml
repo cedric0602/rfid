@@ -15,7 +15,7 @@ data:
         - Kubernetes Cluster:
             icon: kubernetes.svg
             href: http://192.168.2.136
-            description: "Statut du cluster MicroK8s"
+            description: "Statut du cluster MicroK8s cedric"
             
     - Outils:
         - GitHub Repository:
