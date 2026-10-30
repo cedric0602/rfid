@@ -48,7 +48,7 @@ data:
             description: "Statut du cluster MicroK8s"
             widget:
               type: kubernetes
-              url: http://192.168.2.136:30080
+              url: http://cluster.local
 
     - Outils:
         - GitHub Repository:
