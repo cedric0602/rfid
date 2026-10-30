@@ -8,9 +8,8 @@ data:
     title: "Mon Serveur Asus plop"
     background: https://unsplash.com
     theme: dark
-    # RECORRECTION ICI : On dit à Homepage d'afficher les widgets dans le bandeau du haut (header)
-    header:
-      showOptionalWidgets: true
+    # CORRECTION : Active l'affichage complet des widgets dans le bandeau du haut
+    headerStyle: boxed
     layout:
       Infrastructure:
         style: columns
@@ -27,7 +26,6 @@ data:
           date: "dd LLL yyyy"
           time: "HH:mm"
           hour12: false
-    # Utilisation du fournisseur natif 'weather' qui est plus stable avec la géolocalisation
     - weather:
         label: "Lévis"
         latitude: 46.81
@@ -48,7 +46,8 @@ data:
             description: "Statut du cluster MicroK8s"
             widget:
               type: kubernetes
-              url: http://cluster.local
+              # Utilisation de ton endpoint réseau direct pour éviter le blocage de sécurité
+              url: http://192.168.2.136:16443
 
     - Outils:
         - GitHub Repository:
@@ -59,7 +58,6 @@ data:
             icon: si-grafana
             href: http://192.168.2.136:30090
             description: "Suivi et métriques de mon serveur"
-            # Configuration validée pour afficher la température sans virgule
             widget:
               type: prometheusmetric
               url: http://prometheus-service:9090
