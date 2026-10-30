@@ -30,6 +30,7 @@ data:
         latitude: 46.81
         longitude: -71.20
         units: metric
+        cache: 15
     - resources:
         cpu: true
         memory: true
