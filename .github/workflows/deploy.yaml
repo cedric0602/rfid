@@ -14,4 +14,4 @@ jobs:
 
       - name: Déployer l'application Homepage sur Kubernetes
         run: |
-          sg microk8s -c "kubectl apply -f apps/homepage/"
+          microk8s kubectl apply -f apps/homepage/
