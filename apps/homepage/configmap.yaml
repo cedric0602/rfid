@@ -27,7 +27,10 @@ data:
             icon: grafana.svg
             href: http://192.168.2.136:30090
             description: "Suivi et métriques de mon serveur"
-
+        - Monero Mining Pool:
+            icon: monero.svg
+            href: https://supportxmr.com
+            description: "Suivi des gains et du hashrate de l'Asus"
 
   bookmarks.yaml: |
     - Favoris:
