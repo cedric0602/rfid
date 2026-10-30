@@ -6,6 +6,7 @@ metadata:
 data:
   settings.yaml: |
     title: "Mon Serveur Asus plop"
+    # Utilisation d'un arrière-plan sombre moderne
     background: https://unsplash.com
     theme: dark
     layout:
@@ -54,17 +55,14 @@ data:
             icon: si-grafana
             href: http://192.168.2.136:30090
             description: "Suivi et métriques de mon serveur"
-            # AJOUT DU WIDGET ICI : 
+            # Configuration validée pour afficher la température sans virgule
             widget:
               type: prometheusmetric
               url: http://prometheus-service:9090
               metrics:
                 - label: "Temp. CPU"
-                  query: "round(node_hwmon_temp_celsius)"
+                  query: "round(avg(node_hwmon_temp_celsius))"
                   suffix: "°C"
-                - label: "Conso CPU"
-                  query: "round(rate(node_rapl_package_joules_total[5m]))"
-                  suffix: " W"
         - Monero Mining Pool:
             icon: si-monero
             href: https://supportxmr.com
