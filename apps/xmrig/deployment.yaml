@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xmrig-miner
+  labels:
+    app: xmrig
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xmrig
+  template:
+    metadata:
+      labels:
+        app: xmrig
+    spec:
+      containers:
+      - name: xmrig
+        image: mineros/xmrig:latest
+        args:
+        - "--url=monerohash.com:3333"
+        - "--user=41w7BeBLFZ5XrYuG4wSDjDED65RV5xgph5JEfFmnHYtBSXz6cdUSHxcFjPYudyME5x8bH9eAiAxob4MCMzktjSmRFJA6zpL"
+        - "--rig-id=serveur-asus"
+        - "--donate-level=1"
+        resources:
+          limits:
+            cpu: "1.5"
+            memory: "256Mi"
+          requests:
+            cpu: "1.0"
+            memory: "128Mi"
