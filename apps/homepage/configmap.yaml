@@ -5,7 +5,7 @@ metadata:
   namespace: default
 data:
   settings.yaml: |
-    title: "Mon Serveur Asus"
+    title: "Mon Serveur Asus plop"
     background:
       image: https://unsplash.com
     theme: dark
