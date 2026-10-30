@@ -15,7 +15,7 @@ data:
     - Infrastructure:
         - Kubernetes Cluster:
             icon: kubernetes.svg
-            href: http://192.168.2.136
+            href: http://192.168.2.136:30080
             description: "Statut du cluster MicroK8s cedric"
             
     - Outils:
@@ -25,7 +25,7 @@ data:
             description: "Mon code source et mes fichiers YAML"
         - Grafana Monitoring:
             icon: grafana.svg
-            href: http://192.168.2.136:30080
+            href: http://192.168.2.136:30090
             description: "Suivi et métriques de mon serveur"
 
 
