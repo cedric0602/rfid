@@ -25,8 +25,9 @@ data:
           date: "dd LLL yyyy"
           time: "HH:mm"
           hour12: false
-    - openmeteo:
-        label: "Météo Maison"
+    # Utilisation du fournisseur natif 'weather' qui est plus stable avec la géolocalisation
+    - weather:
+        label: "Lévis"
         latitude: 46.81
         longitude: -71.20
         units: metric
