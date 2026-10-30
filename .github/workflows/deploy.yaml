@@ -15,3 +15,4 @@ jobs:
       - name: Déployer l'application Homepage sur Kubernetes
         run: |
           microk8s kubectl apply -f apps/homepage/
+          microk8s kubectl rollout restart deployment homepage-deployment
