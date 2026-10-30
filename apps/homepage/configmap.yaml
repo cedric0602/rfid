@@ -16,7 +16,6 @@ data:
         style: columns
         columns: 3
 
-  # --- NOUVEAU : Bloc des sondes globales du haut de page ---
   widgets.yaml: |
     - logo:
         icon: si-asus
@@ -25,18 +24,16 @@ data:
           date: "dd LLL yyyy"
           time: "HH:mm"
           hour12: false
-    # Sonde météo sans clé API requise
     - openmeteo:
         label: "Météo Maison"
-        latitude: 46.81  # À ajuster selon tes coordonnées (ex: Québec)
+        latitude: 46.81
         longitude: -71.20
         units: metric
-    # Sondes matérielles (en plus de ta CPU/RAM actuelle)
     - resources:
         cpu: true
         memory: true
-        disk: /          # Surveille l'espace de la racine
-        uptime: true     # Depuis quand l'Asus tourne
+        disk: /
+        uptime: true
 
   services.yaml: |
     - Infrastructure:
@@ -44,11 +41,9 @@ data:
             icon: si-kubernetes
             href: http://192.168.2.136:30080
             description: "Statut du cluster MicroK8s"
-            # Widget Kubernetes officiel de Homepage
             widget:
               type: kubernetes
               url: http://192.168.2.136:30080
-              # Optionnel : si ton cluster requiert un token, il se configure ici
 
     - Outils:
         - GitHub Repository:
@@ -59,6 +54,17 @@ data:
             icon: si-grafana
             href: http://192.168.2.136:30090
             description: "Suivi et métriques de mon serveur"
+            # AJOUT DU WIDGET ICI : 
+            widget:
+              type: prometheusmetric
+              url: http://cluster.local
+              metrics:
+                - label: "Temp. CPU"
+                  query: "node_hwmon_temp_celsius"
+                  suffix: "°C"
+                - label: "Zone Temp"
+                  query: "node_thermal_zone_temp / 1000"
+                  suffix: "°C"
         - Monero Mining Pool:
             icon: si-monero
             href: https://supportxmr.com
