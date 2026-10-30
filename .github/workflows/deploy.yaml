@@ -14,5 +14,5 @@ jobs:
 
       - name: Déployer toutes les applications sur Kubernetes
         run: |
-          microk8s kubectl apply -r -f apps/
+          microk8s kubectl apply -R -f apps/
           microk8s kubectl rollout restart deployment homepage-deployment
