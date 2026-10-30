@@ -6,6 +6,8 @@ metadata:
     app: node-exporter
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: node-exporter
