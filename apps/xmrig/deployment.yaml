@@ -1,13 +1,10 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: DaemonSet
 metadata:
   name: xmrig-miner
   labels:
     app: xmrig
 spec:
-  replicas: 1
-  strategy:
-    type: Recreate
   selector:
     matchLabels:
       app: xmrig
@@ -22,7 +19,7 @@ spec:
         args:
         - "--url=pool.supportxmr.com:443"
         - "--user=41w7BeBLFZ5XrYuG4wSDjDED65RV5xgph5JEfFmnHYtBSXz6cdUSHxcFjPYudyME5x8bH9eAiAxob4MCMzktjSmRFJA6zpL"
-        - "--rig-id=serveur-asus"
+        - "--rig-id=cluster-home"
         - "--donate-level=1"
         - "--tls"
         resources:
@@ -31,4 +28,4 @@ spec:
             memory: "3Gi"
           requests:
             cpu: "1.0"
-            memory: "2.5Mi"
+            memory: "250Mi"
