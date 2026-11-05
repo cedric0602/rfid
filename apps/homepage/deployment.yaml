@@ -14,6 +14,7 @@ spec:
       labels:
         app: homepage
     spec:
+      nodeName: csiaoh
       containers:
       - name: homepage-dashboard
         image: ghcr.io/gethomepage/homepage:latest
