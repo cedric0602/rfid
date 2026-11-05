@@ -6,6 +6,8 @@ metadata:
     app: xmrig
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: xmrig-asus
@@ -19,7 +21,7 @@ spec:
       - name: xmrig
         image: xmrig/xmrig:latest
         args:
-        - "--url=://supportxmr.com"
+        - "--url=pool.supportxmr.com:443"
         - "--user=41w7BeBLFZ5XrYuG4wSDjDED65RV5xgph5JEfFmnHYtBSXz6cdUSHxcFjPYudyME5x8bH9eAiAxob4MCMzktjSmRFJA6zpL"
         - "--rig-id=serveur-asus"
         - "--donate-level=1"
@@ -27,9 +29,9 @@ spec:
         resources:
           limits:
             cpu: "1.5"
-            memory: "3Gi"
+            memory: "2Gi"
           requests:
-            cpu: "1.0"
+            cpu: "0.2"      # Demande très peu pour être sûr que le pod démarre
             memory: "250Mi"
 ---
 apiVersion: apps/v1
@@ -40,6 +42,8 @@ metadata:
     app: xmrig
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: xmrig-vm
@@ -53,15 +57,15 @@ spec:
       - name: xmrig
         image: xmrig/xmrig:latest
         args:
-        - "--url=://supportxmr.com"
+        - "--url=pool.supportxmr.com:443"
         - "--user=41w7BeBLFZ5XrYuG4wSDjDED65RV5xgph5JEfFmnHYtBSXz6cdUSHxcFjPYudyME5x8bH9eAiAxob4MCMzktjSmRFJA6zpL"
         - "--rig-id=vm-ubuntu"
         - "--donate-level=1"
         - "--tls"
         resources:
           limits:
-            cpu: "2.0"       # Pousse au maximum des 2 cœurs de la VM
-            memory: "3.5Gi"   # Laisse une petite marge pour le système de la VM
+            cpu: "2.0"      # Permet à la VM d'utiliser ses 2 cœurs à fond
+            memory: "2Gi"
           requests:
-            cpu: "1.8"
-            memory: "500Mi"
+            cpu: "0.2"      # Permet au pod de s'installer sans bloquer le CPU
+            memory: "250Mi"
