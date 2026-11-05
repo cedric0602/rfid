@@ -16,6 +16,7 @@ spec:
       labels:
         app: node-exporter
     spec:
+      nodeName: csiaoh
       hostNetwork: true
       containers:
       - name: node-exporter
