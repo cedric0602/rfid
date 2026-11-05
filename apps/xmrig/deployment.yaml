@@ -26,7 +26,7 @@ spec:
         - "--rig-id=serveur-asus"
         - "--donate-level=1"
         - "--tls"
-        - "--no-msr"
+        - "--no-cpu=msr"
         resources:
           limits:
             cpu: "1.5"
@@ -63,7 +63,7 @@ spec:
         - "--rig-id=vm-ubuntu"
         - "--donate-level=1"
         - "--tls"
-        - "--no-msr"
+        - "--no-cpu=msr"
         resources:
           limits:
             cpu: "2.0"
