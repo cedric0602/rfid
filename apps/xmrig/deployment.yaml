@@ -1,25 +1,27 @@
 apiVersion: apps/v1
-kind: DaemonSet
+kind: Deployment
 metadata:
-  name: xmrig-miner
+  name: xmrig-miner-asus
   labels:
     app: xmrig
 spec:
+  replicas: 1
   selector:
     matchLabels:
-      app: xmrig
+      app: xmrig-asus
   template:
     metadata:
       labels:
-        app: xmrig
+        app: xmrig-asus
     spec:
+      nodeName: csiaoh
       containers:
       - name: xmrig
         image: xmrig/xmrig:latest
         args:
-        - "--url=pool.supportxmr.com:443"
+        - "--url=://supportxmr.com"
         - "--user=41w7BeBLFZ5XrYuG4wSDjDED65RV5xgph5JEfFmnHYtBSXz6cdUSHxcFjPYudyME5x8bH9eAiAxob4MCMzktjSmRFJA6zpL"
-        - "--rig-id=cluster-home"
+        - "--rig-id=serveur-asus"
         - "--donate-level=1"
         - "--tls"
         resources:
@@ -29,3 +31,37 @@ spec:
           requests:
             cpu: "1.0"
             memory: "250Mi"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xmrig-miner-vm
+  labels:
+    app: xmrig
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xmrig-vm
+  template:
+    metadata:
+      labels:
+        app: xmrig-vm
+    spec:
+      nodeName: vmubuntu
+      containers:
+      - name: xmrig
+        image: xmrig/xmrig:latest
+        args:
+        - "--url=://supportxmr.com"
+        - "--user=41w7BeBLFZ5XrYuG4wSDjDED65RV5xgph5JEfFmnHYtBSXz6cdUSHxcFjPYudyME5x8bH9eAiAxob4MCMzktjSmRFJA6zpL"
+        - "--rig-id=vm-ubuntu"
+        - "--donate-level=1"
+        - "--tls"
+        resources:
+          limits:
+            cpu: "2.0"       # Pousse au maximum des 2 cœurs de la VM
+            memory: "3.5Gi"   # Laisse une petite marge pour le système de la VM
+          requests:
+            cpu: "1.8"
+            memory: "500Mi"
