@@ -31,7 +31,7 @@ spec:
             cpu: "1.5"
             memory: "2Gi"
           requests:
-            cpu: "0.2"      # Demande très peu pour être sûr que le pod démarre
+            cpu: "0.2"
             memory: "250Mi"
 ---
 apiVersion: apps/v1
@@ -64,8 +64,8 @@ spec:
         - "--tls"
         resources:
           limits:
-            cpu: "2.0"      # Permet à la VM d'utiliser ses 2 cœurs à fond
+            cpu: "2.0"
             memory: "2Gi"
           requests:
-            cpu: "0.2"      # Permet au pod de s'installer sans bloquer le CPU
+            cpu: "0.2"
             memory: "250Mi"
