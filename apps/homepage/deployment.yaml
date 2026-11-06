@@ -22,9 +22,9 @@ spec:
         - containerPort: 3000
         env:
         - name: HOMEPAGE_VAR_ASUS_IP
-          value: "{{ master_ip }}" # <-- On utilise la variable Ansible ici ! Plus d'IP en dur.
+          value: "192.168.2.136" # <-- Injecte l'IP de l'Asus pour tes configurations
         - name: HOMEPAGE_ALLOWED_HOSTS
-          value: "$(HOMEPAGE_VAR_ASUS_IP),localhost,127.0.0.1"
+          value: "$(HOMEPAGE_VAR_ASUS_IP),localhost,127.0.0.1" # <-- Utilise la variable ici !
         volumeMounts:
         - name: config-volume
           mountPath: /app/config/settings.yaml
