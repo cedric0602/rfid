@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homepage-deployment
+  labels:
+    app: homepage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: homepage
+  template:
+    metadata:
+      labels:
+        app: homepage
+    spec:
+      nodeName: csiaoh
+      containers:
+      - name: homepage-dashboard
+        image: ghcr.io/gethomepage/homepage:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: HOMEPAGE_VAR_ASUS_IP
+          value: "{{ master_ip }}" # <-- Pris automatiquement depuis hosts.yaml
+        - name: HOMEPAGE_ALLOWED_HOSTS
+          value: "$(HOMEPAGE_VAR_ASUS_IP),localhost,127.0.0.1"
+        - name: HOMEPAGE_VAR_UNSAFE_DISABLE_HOST_VALIDATION
+          value: "true"
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config/settings.yaml
+          subPath: settings.yaml
+        - name: config-volume
+          mountPath: /app/config/services.yaml
+          subPath: services.yaml
+        - name: config-volume
+          mountPath: /app/config/bookmarks.yaml
+          subPath: bookmarks.yaml
+        resources:
+          limits:
+            cpu: "0.5"
+            memory: "512Mi"
+          requests:
+            cpu: "0.1"
+            memory: "128Mi"
+      volumes:
+      - name: config-volume
+        configMap:
+          name: homepage-config
