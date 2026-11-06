@@ -8,7 +8,6 @@ data:
     title: "Mon Serveur Asus plop"
     background: https://unsplash.com
     theme: dark
-    # CORRECTION : Active l'affichage complet des widgets dans le bandeau du haut
     headerStyle: boxed
     layout:
       Infrastructure:
@@ -42,12 +41,11 @@ data:
     - Infrastructure:
         - Kubernetes Cluster:
             icon: si-kubernetes
-            href: http://192.168.2.136:30080
+            href: http://{{HOMEPAGE_VAR_ASUS_IP}}:30080
             description: "Statut du cluster MicroK8s"
             widget:
               type: kubernetes
-              # Utilisation de ton endpoint réseau direct pour éviter le blocage de sécurité
-              url: http://192.168.2.136:16443
+              url: http://{{HOMEPAGE_VAR_ASUS_IP}}:16443
 
     - Outils:
         - GitHub Repository:
@@ -56,7 +54,7 @@ data:
             description: "Mon code source et mes fichiers YAML"
         - Grafana Monitoring:
             icon: si-grafana
-            href: http://192.168.2.136:30090
+            href: http://{{HOMEPAGE_VAR_ASUS_IP}}:30090
             description: "Suivi et métriques de mon serveur"
             widget:
               type: prometheusmetric
