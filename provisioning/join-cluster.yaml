@@ -33,3 +33,18 @@
         - name: Execution de la jointure sur le Worker
           ansible.builtin.command: "{{ join_command }}"
       when: inventory_hostname not in cluster_nodes.stdout
+
+    - name: Injection dynamique des variables d'inventaire dans la Homepage
+      block:
+        - name: Generer le fichier deployment.yaml final sans IP en dur
+          ansible.builtin.template:
+            src: ~/rfid/apps/homepage/deployment.yaml.j2
+            dest: ~/rfid/apps/homepage/deployment.yaml
+          delegate_to: localhost
+          become: false
+
+        - name: Appliquer la configuration genere par Ansible dans Kubernetes
+          ansible.builtin.command: microk8s kubectl apply -f ~/rfid/apps/homepage/deployment.yaml
+          delegate_to: localhost
+          become: false
+

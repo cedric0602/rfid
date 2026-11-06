@@ -22,11 +22,11 @@ spec:
         - containerPort: 3000
         env:
         - name: HOMEPAGE_VAR_ASUS_IP
-          value: "192.168.2.136" # <-- Injecte l'IP de l'Asus pour tes configurations
+          value: "192.168.2.136" # <-- Pris automatiquement depuis hosts.yaml
         - name: HOMEPAGE_ALLOWED_HOSTS
-          value: "$(HOMEPAGE_VAR_ASUS_IP),localhost,127.0.0.1" # <-- Utilise la variable ici !
+          value: "$(HOMEPAGE_VAR_ASUS_IP),localhost,127.0.0.1"
         - name: HOMEPAGE_VAR_UNSAFE_DISABLE_HOST_VALIDATION
-          value: "true" # <-- AJOUTE CETTE LIGNE ICI POUR TOUT DÉBLOQUER
+          value: "true"
         volumeMounts:
         - name: config-volume
           mountPath: /app/config/settings.yaml
