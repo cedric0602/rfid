@@ -1,0 +1,11 @@
+all:
+  vars:
+    ansible_user: "cedric"            # Le compte utilisateur de tes machines
+    master_ip: "192.168.2.136"        # L'IP fixe de ton serveur Asus principal
+  children:
+    workers:
+      hosts:
+        vm-ubuntu:
+          ansible_host: "192.168.2.138"
+        # mini-pc:                    # Tu auras juste à décommenter et changer l'IP ici plus tard !
+        #   ansible_host: "192.168.2.140"

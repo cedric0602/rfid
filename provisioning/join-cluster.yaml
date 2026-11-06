@@ -1,0 +1,35 @@
+- name: Configuration et jointure automatique des noeuds MicroK8s
+  hosts: workers
+  become: true
+  tasks:
+    - name: Installation de MicroK8s via Snap
+      ansible.builtin.snap:
+        name: microk8s
+        classic: true
+
+    - name: Attente du demarrage de MicroK8s
+      ansible.builtin.command: microk8s status --wait-ready
+      changed_when: false
+
+    - name: Verification si le noeud est deja dans le cluster
+      ansible.builtin.command: microk8s kubectl get nodes
+      delegate_to: localhost
+      register: cluster_nodes
+      changed_when: false
+      become: false
+
+    - name: Generation du jeton et jointure (si le noeud n'est pas present)
+      block:
+        - name: Generation du jeton de jointure sur le Master Asus
+          ansible.builtin.command: microk8s add-node --token-ttl 600
+          delegate_to: localhost
+          register: add_node_output
+          become: false
+
+        - name: Extraction de la commande de jointure
+          ansible.builtin.set_fact:
+            join_command: "{{ add_node_output.stdout_lines | select('search', 'microk8s join') | first }}"
+
+        - name: Execution de la jointure sur le Worker
+          ansible.builtin.command: "{{ join_command }}"
+      when: inventory_hostname not in cluster_nodes.stdout
