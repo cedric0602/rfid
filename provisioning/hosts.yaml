@@ -1,7 +1,7 @@
 all:
   vars:
     ansible_user: "cedric"            # Le compte utilisateur de tes machines
-    master_ip: "192.168.2.136"        # L'IP fixe de ton serveur Asus principal
+    master_ip: "192.168.0.248"        # L'IP fixe de ton serveur Asus principal
   children:
     workers:
       hosts:
