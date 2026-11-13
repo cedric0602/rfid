@@ -22,7 +22,7 @@ spec:
         - containerPort: 3000
         env:
         - name: HOMEPAGE_VAR_ASUS_IP
-          value: "192.168.2.136" # <-- Pris automatiquement depuis hosts.yaml
+          value: "192.168.0.248" # <-- Pris automatiquement depuis hosts.yaml
         - name: HOMEPAGE_ALLOWED_HOSTS
           value: "$(HOMEPAGE_VAR_ASUS_IP),localhost,127.0.0.1"
         - name: HOMEPAGE_VAR_UNSAFE_DISABLE_HOST_VALIDATION
