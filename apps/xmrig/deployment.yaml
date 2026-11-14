@@ -42,6 +42,14 @@ spec:
           requests:
             cpu: "0.2"
             memory: "2600Mi"
+        volumeMounts:
+        - mountPath: /dev/hugepages
+          name: host-hugepages
+      volumes:
+      - name: host-hugepages
+        hostPath:
+          path: /dev/hugepages
+          type: Directory
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -87,3 +95,11 @@ spec:
           requests:
             cpu: "0.2"
             memory: "2600Mi"
+        volumeMounts:
+        - mountPath: /dev/hugepages
+          name: host-hugepages
+      volumes:
+      - name: host-hugepages
+        hostPath:
+          path: /dev/hugepages
+          type: Directory
