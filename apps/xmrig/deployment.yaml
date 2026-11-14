@@ -20,20 +20,29 @@ spec:
       containers:
       - name: xmrig
         image: xmrig/xmrig:latest
+        securityContext:
+          privileged: true
         args:
         - "--url=pool.supportxmr.com:443"
         - "--user=41w7BeBLFZ5XrYuG4wSDjDED65RV5xgph5JEfFmnHYtBSXz6cdUSHxcFjPYudyME5x8bH9eAiAxob4MCMzktjSmRFJA6zpL"
         - "--rig-id=serveur-asus"
         - "--donate-level=1"
         - "--tls"
-        - "--no-cpu=msr"
+        - "--threads=1"
         resources:
           limits:
             cpu: "1.8"
             memory: "3Gi"
           requests:
             cpu: "0.2"
-            memory: "250Mi"
+            memory: "2.6Gi"
+        volumeMounts:
+        - mountPath: /dev/hugepages
+          name: hugepages
+      volumes:
+      - name: hugepages
+        emptyDir:
+          medium: HugePages
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -57,17 +66,26 @@ spec:
       containers:
       - name: xmrig
         image: xmrig/xmrig:latest
+        securityContext:
+          privileged: true
         args:
         - "--url=pool.supportxmr.com:443"
         - "--user=41w7BeBLFZ5XrYuG4wSDjDED65RV5xgph5JEfFmnHYtBSXz6cdUSHxcFjPYudyME5x8bH9eAiAxob4MCMzktjSmRFJA6zpL"
         - "--rig-id=vm-ubuntu"
         - "--donate-level=1"
         - "--tls"
-        - "--no-cpu=msr"
+        - "--threads=5"
         resources:
           limits:
-            cpu: "4.8"
+            cpu: "5.2"
             memory: "3Gi"
           requests:
             cpu: "0.2"
-            memory: "250Mi"
+            memory: "2.6Gi"
+        volumeMounts:
+        - mountPath: /dev/hugepages
+          name: hugepages
+      volumes:
+      - name: hugepages
+        emptyDir:
+          medium: HugePages
