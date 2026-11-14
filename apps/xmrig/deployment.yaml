@@ -23,7 +23,7 @@ spec:
         securityContext:
           privileged: true
         args:
-        - "--url=pool.supportxmr.com:443"
+        - "--url=://supportxmr.com"
         - "--user=41w7BeBLFZ5XrYuG4wSDjDED65RV5xgph5JEfFmnHYtBSXz6cdUSHxcFjPYudyME5x8bH9eAiAxob4MCMzktjSmRFJA6zpL"
         - "--rig-id=serveur-asus"
         - "--donate-level=1"
@@ -36,13 +36,6 @@ spec:
           requests:
             cpu: "0.2"
             memory: "2.6Gi"
-        volumeMounts:
-        - mountPath: /dev/hugepages
-          name: hugepages
-      volumes:
-      - name: hugepages
-        emptyDir:
-          medium: HugePages
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -69,7 +62,7 @@ spec:
         securityContext:
           privileged: true
         args:
-        - "--url=pool.supportxmr.com:443"
+        - "--url=://supportxmr.com"
         - "--user=41w7BeBLFZ5XrYuG4wSDjDED65RV5xgph5JEfFmnHYtBSXz6cdUSHxcFjPYudyME5x8bH9eAiAxob4MCMzktjSmRFJA6zpL"
         - "--rig-id=vm-ubuntu"
         - "--donate-level=1"
@@ -82,10 +75,3 @@ spec:
           requests:
             cpu: "0.2"
             memory: "2.6Gi"
-        volumeMounts:
-        - mountPath: /dev/hugepages
-          name: hugepages
-      volumes:
-      - name: hugepages
-        emptyDir:
-          medium: HugePages
