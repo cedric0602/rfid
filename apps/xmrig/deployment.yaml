@@ -88,12 +88,11 @@ spec:
         - "1"
         - "--tls"
         - "-t"
-        - "4"
+        - "3"
         - "--print-time"
         - "60"
         resources:
           limits:
-            cpu: "3800m"
             memory: "4Gi"
             hugepages-2Mi: "2560Mi"
           requests:
