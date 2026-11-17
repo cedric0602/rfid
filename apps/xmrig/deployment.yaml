@@ -93,7 +93,7 @@ spec:
         - "60"
         resources:
           limits:
-            memory: "4Gi"
+            memory: "5Gi"
             hugepages-2Mi: "2560Mi"
           requests:
             cpu: "200m"
