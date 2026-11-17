@@ -1,0 +1,160 @@
+# Remplace les Deployments xmrig-miner-asus / xmrig-miner-vm.
+# Plus de nodeName : le mineur tourne sur les noeuds portant le label
+#   miner=light  -> le master (1 thread, pour garder le laptop reactif)
+#   miner=full   -> la VM (5 threads)
+# Quand la VM s'eteint puis revient, le pod repart tout seul.
+# Pool, wallet : overlays/home/vars.env. rig-id = nom du noeud.
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: xmrig-light
+  labels:
+    app: xmrig
+spec:
+  selector:
+    matchLabels:
+      app: xmrig
+      profile: light
+  # Equivalent de l'ancien "Recreate" : l'ancien pod est supprime avant le nouveau
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: xmrig
+        profile: light
+    spec:
+      priorityClassName: miner
+      terminationGracePeriodSeconds: 15
+      nodeSelector:
+        miner: light
+      containers:
+      - name: xmrig
+        image: xmrig/xmrig
+        securityContext:
+          privileged: true   # utile pour l'acces MSR (boost hashrate) ; a tester sans
+        command: ["xmrig"]
+        args:
+        - "-o"
+        - "$(XMR_POOL)"
+        - "-u"
+        - "$(XMR_WALLET)"
+        - "--rig-id"
+        - "$(NODE_NAME)"
+        - "--donate-level"
+        - "1"
+        - "--tls"
+        - "--cpu-priority"
+        - "1"
+        - "-t"
+        - "1"
+        env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: XMR_POOL
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-vars
+              key: XMR_POOL
+        - name: XMR_WALLET
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-vars
+              key: XMR_WALLET
+        resources:
+          limits:
+            cpu: "1.8"
+            memory: "4Gi"
+            hugepages-2Mi: "2560Mi"
+          requests:
+            cpu: "0.2"
+            memory: "2600Mi"
+            hugepages-2Mi: "2560Mi"
+        volumeMounts:
+        - mountPath: /dev/hugepages
+          name: hugepages
+      volumes:
+      - name: hugepages
+        emptyDir:
+          medium: HugePages
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: xmrig-full
+  labels:
+    app: xmrig
+spec:
+  selector:
+    matchLabels:
+      app: xmrig
+      profile: full
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: xmrig
+        profile: full
+    spec:
+      priorityClassName: miner
+      terminationGracePeriodSeconds: 15
+      nodeSelector:
+        miner: full
+      containers:
+      - name: xmrig
+        image: xmrig/xmrig
+        securityContext:
+          privileged: true
+        command: ["xmrig"]
+        args:
+        - "-o"
+        - "$(XMR_POOL)"
+        - "-u"
+        - "$(XMR_WALLET)"
+        - "--rig-id"
+        - "$(NODE_NAME)"
+        - "--donate-level"
+        - "1"
+        - "--tls"
+        - "--cpu-priority"
+        - "1"
+        - "-t"
+        - "5"
+        env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: XMR_POOL
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-vars
+              key: XMR_POOL
+        - name: XMR_WALLET
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-vars
+              key: XMR_WALLET
+        resources:
+          limits:
+            cpu: "5.2"
+            memory: "4Gi"
+            hugepages-2Mi: "2560Mi"
+          requests:
+            cpu: "0.2"
+            memory: "2600Mi"
+            hugepages-2Mi: "2560Mi"
+        volumeMounts:
+        - mountPath: /dev/hugepages
+          name: hugepages
+      volumes:
+      - name: hugepages
+        emptyDir:
+          medium: HugePages

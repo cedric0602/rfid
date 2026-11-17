@@ -1,0 +1,26 @@
+- Infrastructure:
+    - Kubernetes Cluster:
+        icon: si-kubernetes
+        href: http://{{HOMEPAGE_VAR_MASTER_IP}}:30080
+        description: "Statut du cluster MicroK8s"
+
+- Outils:
+    - GitHub Repository:
+        icon: si-github
+        href: https://github.com
+        description: "Mon code source et mes fichiers YAML"
+    - Grafana Monitoring:
+        icon: si-grafana
+        href: http://{{HOMEPAGE_VAR_MASTER_IP}}:30090
+        description: "Suivi et métriques de mon serveur"
+        widget:
+          type: prometheusmetric
+          url: http://prometheus-service:9090
+          metrics:
+            - label: "Temp. CPU"
+              query: "round(avg(node_hwmon_temp_celsius))"
+              suffix: "°C"
+    - Monero Mining Pool:
+        icon: si-monero
+        href: https://supportxmr.com
+        description: "Suivi des gains et du hashrate de l'Asus"

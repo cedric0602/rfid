@@ -1,0 +1,143 @@
+# Usage (depuis le master) :
+#   ansible-galaxy collection install community.general
+#   ansible-playbook -i inventory/hosts.yaml site.yaml --ask-become-pass
+
+# ------------------------------------------------------------------
+# 1) Commun : hugepages + MicroK8s
+# ------------------------------------------------------------------
+- name: Preparation commune (hugepages + MicroK8s)
+  hosts: all
+  become: true
+  tasks:
+    - name: Reserver les hugepages pour xmrig
+      ansible.builtin.copy:
+        dest: /etc/sysctl.d/90-hugepages.conf
+        content: "vm.nr_hugepages = {{ hugepages_count }}\n"
+        mode: "0644"
+      notify:
+        - Appliquer sysctl
+        - Redemarrer MicroK8s
+
+    - name: Installation de MicroK8s via Snap
+      community.general.snap:
+        name: microk8s
+        classic: true
+
+    - name: Attente du demarrage de MicroK8s
+      ansible.builtin.command: microk8s status --wait-ready
+      changed_when: false
+
+  handlers:
+    - name: Appliquer sysctl
+      ansible.builtin.command: sysctl --system
+
+    # Necessaire pour que le kubelet voie les hugepages
+    - name: Redemarrer MicroK8s
+      ansible.builtin.command: snap restart microk8s
+
+# ------------------------------------------------------------------
+# 2) Master : laptop utilise comme serveur
+# ------------------------------------------------------------------
+- name: Reglages du laptop master
+  hosts: masters
+  become: true
+  tasks:
+    - name: Ne pas s'eteindre quand on ferme l'ecran
+      ansible.builtin.copy:
+        dest: /etc/systemd/logind.conf.d/90-server-lid.conf
+        mode: "0644"
+        content: |
+          [Login]
+          HandleLidSwitch=ignore
+          HandleLidSwitchExternalPower=ignore
+          HandleLidSwitchDocked=ignore
+      notify: Recharger logind
+
+    - name: Desactiver veille et hibernation
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        masked: true
+      loop:
+        - sleep.target
+        - suspend.target
+        - hibernate.target
+        - hybrid-sleep.target
+
+    - name: Installer TLP (gestion batterie)
+      ansible.builtin.apt:
+        name: tlp
+        state: present
+        update_cache: true
+
+    - name: Limiter la charge de la batterie (ignore si non supporte par le materiel)
+      ansible.builtin.copy:
+        dest: /etc/tlp.d/90-server.conf
+        mode: "0644"
+        content: |
+          START_CHARGE_THRESH_BAT0={{ battery_start_threshold }}
+          STOP_CHARGE_THRESH_BAT0={{ battery_stop_threshold }}
+      notify: Recharger TLP
+
+    - name: Activer les addons MicroK8s necessaires
+      ansible.builtin.command: "microk8s enable {{ item }}"
+      loop:
+        - dns
+        - hostpath-storage
+        - metrics-server
+      changed_when: false
+
+    - name: Poser les labels du master (utilises par les nodeSelector)
+      ansible.builtin.command: >
+        microk8s kubectl label node {{ inventory_hostname }}
+        homelab/role=master miner=light --overwrite
+      become: false
+      changed_when: false
+
+  handlers:
+    - name: Recharger logind
+      ansible.builtin.command: systemctl kill -s HUP --kill-who=main systemd-logind
+
+    - name: Recharger TLP
+      ansible.builtin.command: tlp start
+
+# ------------------------------------------------------------------
+# 3) Workers : jointure au cluster + label mineur
+# ------------------------------------------------------------------
+- name: Jointure automatique des workers MicroK8s
+  hosts: workers
+  become: true
+  tasks:
+    - name: Liste des noeuds deja dans le cluster (lue sur le master)
+      ansible.builtin.command: microk8s kubectl get nodes -o name
+      delegate_to: localhost
+      register: cluster_nodes
+      changed_when: false
+      become: false
+
+    - name: Generation du jeton et jointure (si le noeud n'est pas present)
+      when: ('node/' ~ inventory_hostname) not in cluster_nodes.stdout_lines
+      block:
+        - name: Generation du jeton de jointure sur le master
+          ansible.builtin.command: microk8s add-node --token-ttl 600
+          delegate_to: localhost
+          register: add_node_output
+          become: false
+
+        - name: Extraction de la commande de jointure
+          ansible.builtin.set_fact:
+            join_command: "{{ (add_node_output.stdout_lines | select('search', 'microk8s join') | first | trim) }} --worker"
+
+        - name: Execution de la jointure sur le worker
+          ansible.builtin.command: "{{ join_command }}"
+
+    - name: Label mineur sur le worker (le noeud peut mettre quelques secondes a apparaitre)
+      ansible.builtin.command: >
+        microk8s kubectl label node {{ inventory_hostname }} miner=full --overwrite
+      delegate_to: localhost
+      become: false
+      register: label_result
+      retries: 12
+      delay: 5
+      until: label_result.rc == 0
+      changed_when: false
+

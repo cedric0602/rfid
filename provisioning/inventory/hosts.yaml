@@ -1,0 +1,16 @@
+# IP des machines (SSH uniquement). Les variables du cluster sont dans
+# overlays/home/vars.env. Reserve ces IP dans ta box (DHCP statique).
+# Le nom d'hote ici DOIT etre le nom du noeud Kubernetes.
+all:
+  children:
+    masters:
+      hosts:
+        csiaoh:
+          ansible_connection: local   # on lance le playbook depuis le master
+    workers:
+      hosts:
+        vmubuntu:
+          ansible_host: "192.168.0.52"
+        # mini-pc:                    # decommente et change l'IP pour un futur worker
+        #   ansible_host: "192.168.2.140"
+

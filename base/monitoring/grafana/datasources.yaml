@@ -1,0 +1,8 @@
+# Datasource provisionnee automatiquement : plus rien a ajouter a la main dans l'UI
+apiVersion: 1
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus-service:9090
+    isDefault: true

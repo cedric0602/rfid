@@ -1,0 +1,8 @@
+ansible_user: "cedric"
+
+# 2560Mi / 2Mi = 1280 pages (voir resources.hugepages-2Mi du mineur)
+hugepages_count: 1280
+
+# Seuils de charge de la batterie du laptop master (si le materiel le supporte)
+battery_start_threshold: 75
+battery_stop_threshold: 80

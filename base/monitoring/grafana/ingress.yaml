@@ -1,16 +1,20 @@
+# Inchange volontairement (NodePort 30090 + Ingress). Tu peux plus tard garder
+# un seul des deux acces.
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: homepage-ingress
+  name: grafana-ingress
 spec:
   ingressClassName: traefik
   rules:
-  - http:
+  - host: grafana.local
+    http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: homepage-service
+            name: grafana-service
             port:
               number: 80
+

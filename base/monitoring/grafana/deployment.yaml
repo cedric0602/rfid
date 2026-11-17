@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana-deployment
+  labels:
+    app: grafana
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      priorityClassName: monitoring
+      nodeSelector:
+        homelab/role: master
+      securityContext:
+        fsGroup: 472
+      containers:
+      - name: grafana
+        image: grafana/grafana
+        ports:
+        - containerPort: 3000
+        env:
+        # MASTER_IP doit etre defini AVANT son utilisation dans $(MASTER_IP)
+        - name: MASTER_IP
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-vars
+              key: MASTER_IP
+        - name: GF_SERVER_ROOT_URL
+          value: "http://$(MASTER_IP):30090"
+        - name: GF_SERVER_SERVE_FROM_SUB_PATH
+          value: "false"
+        # Secret optionnel : s'il n'existe pas, Grafana garde admin/admin.
+        # Creation : voir README (etape 3).
+        - name: GF_SECURITY_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: grafana-admin
+              key: GF_SECURITY_ADMIN_PASSWORD
+              optional: true
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 20
+          failureThreshold: 3
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/grafana
+        - name: datasources
+          mountPath: /etc/grafana/provisioning/datasources/datasources.yaml
+          subPath: datasources.yaml
+        resources:
+          limits:
+            cpu: "0.5"
+            memory: "512Mi"
+          requests:
+            cpu: "0.1"
+            memory: "128Mi"
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: grafana-data
+      - name: datasources
+        configMap:
+          name: grafana-datasources

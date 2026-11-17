@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+
+# Un seul deploiement a la fois
+concurrency:
+  group: deploy
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -12,7 +18,19 @@ jobs:
       - name: Récupérer le code source
         uses: actions/checkout@v4
 
-      - name: Déployer toutes les applications sur Kubernetes
+      - name: Valider les manifests (build Kustomize + dry-run)
         run: |
-          microk8s kubectl apply -R -f apps/
-          microk8s kubectl rollout restart deployment homepage-deployment
+          microk8s kubectl kustomize overlays/home > "$RUNNER_TEMP/rendered.yaml"
+          microk8s kubectl apply --dry-run=client -f "$RUNNER_TEMP/rendered.yaml"
+
+      - name: Déployer sur Kubernetes
+        run: microk8s kubectl apply -k overlays/home
+
+      # Uniquement les Deployments (epingles sur le master).
+      # Les DaemonSets sont exclus : si la VM est eteinte, leur rollout
+      # ne se terminerait jamais et le CI echouerait chaque semaine.
+      - name: Vérifier que les déploiements sont prêts
+        run: |
+          for d in prometheus-deployment grafana-deployment homepage-deployment; do
+            microk8s kubectl rollout status deployment/$d --timeout=180s
+          done

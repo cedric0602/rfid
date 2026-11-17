@@ -1,0 +1,32 @@
+- logo:
+    icon: si-asus
+- datetime:
+    format:
+      date: "dd LLL yyyy"
+      time: "HH:mm"
+      hour12: false
+- weather:
+    label: "Lévis"
+    latitude: 46.81
+    longitude: -71.20
+    units: metric
+    cache: 15
+- resources:
+    cpu: true
+    memory: true
+    disk: /
+    uptime: true
+# Remplace l'ancien "widget: type: kubernetes" de services.yaml.
+# Necessite kubernetes.yaml, rbac.yaml et l'addon metrics-server.
+- kubernetes:
+    cluster:
+      show: true
+      cpu: true
+      memory: true
+      showLabel: true
+      label: "cluster"
+    nodes:
+      show: true
+      cpu: true
+      memory: true
+      showLabel: true

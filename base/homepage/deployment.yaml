@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homepage-deployment
+  labels:
+    app: homepage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: homepage
+  template:
+    metadata:
+      labels:
+        app: homepage
+    spec:
+      serviceAccountName: homepage
+      priorityClassName: monitoring
+      nodeSelector:
+        homelab/role: master
+      containers:
+      - name: homepage-dashboard
+        image: ghcr.io/gethomepage/homepage
+        ports:
+        - containerPort: 3000
+        env:
+        # Vient de overlays/home/vars.env (plus d'IP en dur, plus de .j2)
+        - name: HOMEPAGE_VAR_MASTER_IP
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-vars
+              key: MASTER_IP
+        - name: HOMEPAGE_ALLOWED_HOSTS
+          value: "$(HOMEPAGE_VAR_MASTER_IP),localhost,127.0.0.1"
+        # Conserve de l'ancienne version ; a retirer si HOMEPAGE_ALLOWED_HOSTS suffit.
+        - name: HOMEPAGE_VAR_UNSAFE_DISABLE_HOST_VALIDATION
+          value: "true"
+        # tcpSocket plutot qu'httpGet : la validation du Host de Homepage
+        # pourrait rejeter les sondes du kubelet.
+        readinessProbe:
+          tcpSocket:
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 3000
+          initialDelaySeconds: 20
+          periodSeconds: 20
+          failureThreshold: 3
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config/settings.yaml
+          subPath: settings.yaml
+        - name: config-volume
+          mountPath: /app/config/widgets.yaml     # manquait dans l'ancienne version
+          subPath: widgets.yaml
+        - name: config-volume
+          mountPath: /app/config/services.yaml
+          subPath: services.yaml
+        - name: config-volume
+          mountPath: /app/config/bookmarks.yaml
+          subPath: bookmarks.yaml
+        - name: config-volume
+          mountPath: /app/config/kubernetes.yaml
+          subPath: kubernetes.yaml
+        resources:
+          limits:
+            cpu: "0.5"
+            memory: "512Mi"
+          requests:
+            cpu: "0.1"
+            memory: "128Mi"
+      volumes:
+      - name: config-volume
+        configMap:
+          name: homepage-config
+

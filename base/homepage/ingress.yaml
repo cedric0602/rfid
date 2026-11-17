@@ -1,17 +1,16 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: grafana-ingress
+  name: homepage-ingress
 spec:
   ingressClassName: traefik
   rules:
-  - host: grafana.local
-    http:
+  - http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: grafana-service
+            name: homepage-service
             port:
               number: 80

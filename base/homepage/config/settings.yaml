@@ -1,0 +1,11 @@
+title: "Mon Serveur Asus plop"
+background: https://unsplash.com
+theme: dark
+headerStyle: boxed
+layout:
+  Infrastructure:
+    style: columns
+    columns: 1
+  Outils:
+    style: columns
+    columns: 3

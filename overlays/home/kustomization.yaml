@@ -1,0 +1,31 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base/priority
+  - ../../base/monitoring
+  - ../../base/homepage
+  - ../../base/miner
+
+# Variables communes (IP, pool, wallet) -> ConfigMap "cluster-vars".
+# Kustomize ajoute un hash au nom : changer vars.env redemarre les pods concernes.
+configMapGenerator:
+  - name: cluster-vars
+    envs:
+      - vars.env
+
+# Versions d'images centralisees ici (les manifests de base n'ont pas de tag).
+# EXEMPLES : remplace par les dernieres versions stables au moment du deploiement.
+images:
+  - name: grafana/grafana
+    newTag: "11.4.0"
+  - name: prom/prometheus
+    newTag: "v2.55.1"
+  - name: prom/node-exporter
+    newTag: "v1.8.2"
+  - name: ghcr.io/gethomepage/homepage
+    newTag: "v1.2.0"
+  - name: xmrig/xmrig
+    newTag: "latest"   # a figer des que tu connais le tag qui marche chez toi
+
+
