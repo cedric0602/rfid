@@ -160,6 +160,47 @@
           ]
         }
       }
+    },
+    {
+      "id": 8,
+      "type": "timeseries",
+      "title": "CPU par pod (cAdvisor, fiable dans la VM)",
+      "description": "En coeurs. xmrig-full plafonne au nombre de threads (-t) ou a sa limite CPU.",
+      "gridPos": { "x": 0, "y": 23, "w": 12, "h": 9 },
+      "datasource": { "type": "prometheus", "uid": "${ds}" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by(instance, pod)(rate(container_cpu_usage_seconds_total{cpu=\"total\"}[5m])) > 0.01",
+          "legendFormat": "{{instance}} / {{pod}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "none", "decimals": 2, "min": 0, "custom": { "fillOpacity": 15, "stacking": { "mode": "normal", "group": "A" } } } }
+    },
+    {
+      "id": 9,
+      "type": "timeseries",
+      "title": "Bridage CPU du mineur (throttling)",
+      "description": "% des periodes ou xmrig est freine par sa limite CPU. Doit rester proche de 0.",
+      "gridPos": { "x": 12, "y": 23, "w": 12, "h": 9 },
+      "datasource": { "type": "prometheus", "uid": "${ds}" },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by(instance)(rate(container_cpu_cfs_throttled_periods_total{container=\"xmrig\"}[5m])) / sum by(instance)(rate(container_cpu_cfs_periods_total{container=\"xmrig\"}[5m]))",
+          "legendFormat": "{{instance}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit", "min": 0, "max": 1,
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "red", "value": 0.2 }
+          ] },
+          "custom": { "thresholdsStyle": { "mode": "line" } }
+        }
+      }
     }
   ]
 }

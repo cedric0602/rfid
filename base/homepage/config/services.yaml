@@ -5,8 +5,8 @@
         description: "Statut du cluster MicroK8s"
 
 # Memes requetes que le dashboard Grafana "Noeuds du cluster".
-# CPU calcule en proportion (1 - idle/total) : juste meme pour la VM VirtualBox,
-# contrairement au widget kubernetes (metrics-server).
+# Master : CPU en proportion (1 - idle/total).
+# VM : CPU mesure par conteneur (cAdvisor), seule mesure fiable sous VirtualBox.
 - Ingénierie:
     - csiaoh (master):
         icon: si-asus
@@ -38,8 +38,13 @@
           url: http://prometheus-service:9090
           refreshInterval: 15000
           metrics:
-            - label: CPU
-              query: round(100 * (1 - sum(rate(node_cpu_seconds_total{instance="vmubuntu",mode="idle"}[5m])) / sum(rate(node_cpu_seconds_total{instance="vmubuntu"}[5m]))))
+            # VirtualBox fausse le CPU global de la VM (meme en proportion) :
+            # on mesure la somme des conteneurs (cAdvisor), qui est fiable.
+            - label: CPU pods
+              query: round(100 * sum(rate(container_cpu_usage_seconds_total{instance="vmubuntu",cpu="total"}[5m])) / count(node_cpu_seconds_total{instance="vmubuntu",mode="idle"}))
+              suffix: "%"
+            - label: Bridage
+              query: round(100 * sum(rate(container_cpu_cfs_throttled_periods_total{instance="vmubuntu",container="xmrig"}[5m])) / sum(rate(container_cpu_cfs_periods_total{instance="vmubuntu",container="xmrig"}[5m])))
               suffix: "%"
             - label: RAM
               query: round(100 * (1 - node_memory_MemAvailable_bytes{instance="vmubuntu"} / node_memory_MemTotal_bytes{instance="vmubuntu"}))

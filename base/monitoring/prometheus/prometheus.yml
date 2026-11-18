@@ -13,3 +13,32 @@ scrape_configs:
         replacement: '$1:9100'
       - source_labels: [__meta_kubernetes_node_name]
         target_label: instance
+
+  # CPU / memoire par conteneur (cAdvisor du kubelet, via l'API server).
+  # Mesure fiable meme dans la VM VirtualBox, contrairement au CPU global
+  # du noeud (/proc/stat perd des ticks).
+  - job_name: 'cadvisor'
+    scheme: https
+    tls_config:
+      ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    authorization:
+      credentials_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+    kubernetes_sd_configs:
+      - role: node
+    relabel_configs:
+      - target_label: __address__
+        replacement: kubernetes.default.svc:443
+      - source_labels: [__meta_kubernetes_node_name]
+        regex: (.+)
+        target_label: __metrics_path__
+        replacement: /api/v1/nodes/$1/proxy/metrics/cadvisor
+      - source_labels: [__meta_kubernetes_node_name]
+        target_label: instance
+    # On ne garde que l'utile (cAdvisor expose des milliers de series)
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: container_cpu_usage_seconds_total|container_cpu_cfs_periods_total|container_cpu_cfs_throttled_periods_total|container_memory_working_set_bytes
+        action: keep
+      - source_labels: [container]
+        regex: ''
+        action: drop
