@@ -64,6 +64,13 @@ spec:
         - name: config-volume
           mountPath: /app/config/kubernetes.yaml
           subPath: kubernetes.yaml
+        # Theme LCARS / HUD
+        - name: config-volume
+          mountPath: /app/config/custom.css
+          subPath: custom.css
+        - name: config-volume
+          mountPath: /app/config/custom.js
+          subPath: custom.js
         resources:
           limits:
             cpu: "0.5"

@@ -1,11 +1,23 @@
-title: "Mon Serveur Asus plop"
+title: "USS Csiaoh - Passerelle"
+# Le style (theme LCARS / HUD) est dans custom.css et custom.js
 # background: doit etre l'URL d'une IMAGE (ex: https://images.unsplash.com/photo-xxxx)
 theme: dark
-headerStyle: boxed
+color: neutral
+headerStyle: clean
+hideVersion: true
 layout:
-  Infrastructure:
+  Passerelle:
     style: columns
     columns: 1
-  Outils:
+  Ingénierie:
+    style: columns
+    columns: 2
+  Opérations:
     style: columns
     columns: 3
+  Star Citizen:
+    style: columns
+    columns: 3
+  Starfleet:
+    style: columns
+    columns: 2

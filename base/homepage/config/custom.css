@@ -1,0 +1,273 @@
+/* ==================================================================
+   Theme "Passerelle" : inspire de l'interface LCARS (Star Trek)
+   + touches HUD facon Star Citizen (crochets cyan sur les donnees).
+   Charge automatiquement par Homepage (/app/config/custom.css).
+   ================================================================== */
+@import url("https://fonts.googleapis.com/css2?family=Antonio:wght@300;400;600;700&display=swap");
+
+:root {
+  --lc-black:    #000000;
+  --lc-orange:   #ff9900;
+  --lc-peach:    #ff9966;
+  --lc-gold:     #ffcc66;
+  --lc-lavender: #cc99cc;
+  --lc-violet:   #9977cc;
+  --lc-blue:     #9999ff;
+  --lc-sky:      #99ccff;
+  --lc-red:      #cc6666;
+  --lc-text:     #ffddb0;
+  --hud-cyan:    #3fd0ff;
+  --hud-glow:    rgba(63, 208, 255, .35);
+  --lc-font:     "Antonio", "Arial Narrow", "Roboto Condensed", sans-serif;
+}
+
+/* ---------- Fond : espace profond + champ d'etoiles en CSS pur ---------- */
+html, body, #page_wrapper {
+  background-color: var(--lc-black) !important;
+}
+#page_wrapper {
+  background-image:
+    radial-gradient(1px 1px at 20px 30px, #fff, transparent),
+    radial-gradient(1px 1px at 140px 70px, rgba(255,255,255,.8), transparent),
+    radial-gradient(1.5px 1.5px at 90px 160px, #cfe8ff, transparent),
+    radial-gradient(1px 1px at 230px 120px, rgba(255,255,255,.6), transparent),
+    radial-gradient(1px 1px at 300px 260px, #fff, transparent),
+    radial-gradient(2px 2px at 380px 40px, rgba(255,214,170,.9), transparent),
+    radial-gradient(1px 1px at 50px 300px, rgba(255,255,255,.7), transparent),
+    radial-gradient(ellipse at 85% 10%, rgba(80, 60, 160, .25), transparent 55%),
+    radial-gradient(ellipse at 10% 90%, rgba(0, 110, 160, .20), transparent 50%) !important;
+  background-size: 420px 340px, 420px 340px, 420px 340px, 420px 340px,
+                   420px 340px, 420px 340px, 420px 340px, 100% 100%, 100% 100% !important;
+  background-attachment: fixed !important;
+  animation: lc-drift 240s linear infinite;
+}
+@keyframes lc-drift {
+  from { background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0; }
+  to   { background-position: -420px 0, -420px 0, -840px 0, -420px 0,
+                              -840px 0, -420px 0, -840px 0, 0 0, 0 0; }
+}
+
+body, #page_wrapper, #page_wrapper * {
+  font-family: var(--lc-font) !important;
+  letter-spacing: .04em;
+}
+#page_wrapper { color: var(--lc-text); }
+
+/* ---------- Barre d'en-tete : coude LCARS ---------- */
+#information-widgets {
+  position: relative;
+  border: none !important;
+  margin-top: 1.25rem !important;
+  padding: 1rem 1.25rem 1rem 6.5rem !important;
+  background: linear-gradient(90deg, rgba(255,153,0,.08), transparent 70%);
+  border-top-left-radius: 3rem;
+}
+/* Montant vertical + barre horizontale du coude */
+#information-widgets::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 5rem;
+  background: var(--lc-orange);
+  border-top-left-radius: 3rem;
+  border-bottom-left-radius: .75rem;
+}
+#information-widgets::after {
+  content: "";
+  position: absolute;
+  left: 5rem; right: 0; bottom: 0;
+  height: .7rem;
+  background:
+    linear-gradient(90deg,
+      var(--lc-orange) 0 30%, transparent 30% 31%,
+      var(--lc-lavender) 31% 55%, transparent 55% 56%,
+      var(--lc-blue) 56% 80%, transparent 80% 81%,
+      var(--lc-peach) 81% 100%);
+  border-top-right-radius: .35rem;
+  border-bottom-right-radius: .35rem;
+}
+#information-widgets svg,
+#information-widgets .resource-icon { color: var(--lc-gold) !important; }
+#information-widgets .resource-usage > div,
+#information-widgets [class*="h-1"] > div { background-color: var(--lc-orange) !important; }
+.information-widget-datetime span,
+.information-widget-datetime div {
+  color: var(--lc-gold) !important;
+  font-size: 1.6rem !important;
+  font-weight: 600;
+}
+
+/* ---------- Titres de groupes : pastilles LCARS ---------- */
+.service-group-name,
+.bookmark-group-name {
+  display: inline-block;
+  padding: .15rem 1.5rem .15rem 1rem !important;
+  margin-bottom: .4rem;
+  color: var(--lc-black) !important;
+  background: var(--lc-orange);
+  border-radius: 999px 0 0 999px;
+  font-weight: 700 !important;
+  font-size: 1.05rem !important;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  position: relative;
+}
+/* petite barre qui prolonge la pastille */
+.service-group-name::after,
+.bookmark-group-name::after {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0;
+  left: calc(100% + .35rem);
+  width: 3rem;
+  background: inherit;
+  border-radius: 0 999px 999px 0;
+  opacity: .8;
+}
+.services-group:nth-child(4n+1) .service-group-name { background: var(--lc-orange); }
+.services-group:nth-child(4n+2) .service-group-name { background: var(--lc-lavender); }
+.services-group:nth-child(4n+3) .service-group-name { background: var(--lc-blue); }
+.services-group:nth-child(4n+4) .service-group-name { background: var(--lc-peach); }
+.bookmark-group:nth-child(odd)  .bookmark-group-name { background: var(--lc-sky); }
+.bookmark-group:nth-child(even) .bookmark-group-name { background: var(--lc-gold); }
+
+/* ---------- Cartes de services : blocs LCARS ---------- */
+.service-card {
+  background: rgba(8, 8, 14, .82) !important;
+  border: 1px solid rgba(255, 153, 0, .25) !important;
+  border-left: .9rem solid var(--lc-orange) !important;
+  border-radius: 1.4rem .35rem .35rem 1.4rem !important;
+  box-shadow: none !important;
+  transition: border-color .25s, box-shadow .25s, transform .25s;
+}
+.services-group:nth-child(4n+2) .service-card { border-left-color: var(--lc-lavender) !important; }
+.services-group:nth-child(4n+3) .service-card { border-left-color: var(--lc-blue) !important; }
+.services-group:nth-child(4n+4) .service-card { border-left-color: var(--lc-peach) !important; }
+
+.service-card:hover {
+  border-color: var(--hud-cyan) !important;
+  box-shadow: 0 0 18px var(--hud-glow), inset 0 0 12px rgba(63,208,255,.08) !important;
+  transform: translateY(-1px);
+}
+.service-name {
+  color: var(--lc-gold) !important;
+  font-weight: 600 !important;
+  font-size: 1.05rem !important;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.service-description {
+  color: var(--lc-sky) !important;
+  opacity: .85;
+  text-transform: uppercase;
+  font-size: .72rem !important;
+  letter-spacing: .1em;
+}
+.service-icon svg, .service-icon img { filter: drop-shadow(0 0 4px rgba(255,153,0,.5)); }
+.service-icon svg { color: var(--lc-orange) !important; }
+
+/* ---------- Metriques : lecture HUD (Star Citizen) ---------- */
+.service-block {
+  position: relative;
+  background: rgba(0, 20, 30, .65) !important;
+  border-radius: .2rem !important;
+  margin: .2rem !important;
+  overflow: hidden;
+}
+/* crochets de visee aux coins */
+.service-block::before,
+.service-block::after {
+  content: "";
+  position: absolute;
+  width: .6rem; height: .6rem;
+  border-color: var(--hud-cyan);
+  border-style: solid;
+  pointer-events: none;
+}
+.service-block::before { top: 2px; left: 2px;  border-width: 1px 0 0 1px; }
+.service-block::after  { bottom: 2px; right: 2px; border-width: 0 1px 1px 0; }
+.service-block > div:first-child {
+  color: var(--hud-cyan) !important;
+  font-size: 1.15rem !important;
+  font-weight: 600 !important;
+  text-shadow: 0 0 6px var(--hud-glow);
+}
+.service-block > div:last-child {
+  color: var(--lc-peach) !important;
+  font-size: .65rem !important;
+  text-transform: uppercase;
+  letter-spacing: .15em;
+}
+
+/* ---------- Favoris : boutons LCARS ---------- */
+.bookmark a, .bookmark > div {
+  background: rgba(8, 8, 14, .82) !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(153, 204, 255, .25) !important;
+  box-shadow: none !important;
+  transition: background .2s, color .2s;
+}
+.bookmark-icon {
+  background: var(--lc-sky) !important;
+  color: var(--lc-black) !important;
+  border-radius: 999px 0 0 999px !important;
+  font-weight: 700;
+}
+.bookmark-group:nth-child(even) .bookmark-icon { background: var(--lc-gold) !important; }
+.bookmark-name { color: var(--lc-text) !important; text-transform: uppercase; letter-spacing: .1em; }
+.bookmark-description { color: var(--lc-sky) !important; opacity: .7; }
+.bookmark a:hover, .bookmark > div:hover {
+  background: rgba(63, 208, 255, .12) !important;
+  border-color: var(--hud-cyan) !important;
+}
+
+/* ---------- Bandeau ajoute par custom.js (date stellaire / UEE) ---------- */
+#lcars-chrono {
+  display: flex;
+  gap: .4rem;
+  align-items: stretch;
+  margin: .6rem 0 0;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+}
+#lcars-chrono .lc-pill {
+  padding: .1rem .9rem;
+  color: var(--lc-black);
+  font-size: .85rem;
+}
+#lcars-chrono .lc-pill:first-child { border-radius: 999px 0 0 999px; }
+#lcars-chrono .lc-pill:last-child  { border-radius: 0 999px 999px 0; }
+#lcars-chrono .lc-sd  { background: var(--lc-lavender); }
+#lcars-chrono .lc-uee { background: var(--hud-cyan); }
+#lcars-chrono .lc-code { background: var(--lc-red); }
+
+/* Ligne de balayage discrete facon ecran HUD */
+#page_wrapper::after {
+  content: "";
+  position: fixed;
+  left: 0; right: 0; top: -10%;
+  height: 8%;
+  background: linear-gradient(180deg, transparent, rgba(63,208,255,.05), transparent);
+  pointer-events: none;
+  animation: hud-scan 9s linear infinite;
+  z-index: 50;
+}
+@keyframes hud-scan { to { top: 110%; } }
+
+/* Pied de page / version */
+#footer, #version { color: var(--lc-violet) !important; text-transform: uppercase; }
+
+/* Accessibilite : pas d'animation si l'utilisateur la refuse */
+@media (prefers-reduced-motion: reduce) {
+  #page_wrapper { animation: none; }
+  #page_wrapper::after { display: none; }
+  .service-card { transition: none; }
+}
+
+/* Mobile : coude plus fin */
+@media (max-width: 640px) {
+  #information-widgets { padding-left: 3.5rem !important; border-top-left-radius: 2rem; }
+  #information-widgets::before { width: 2.5rem; border-top-left-radius: 2rem; }
+  #information-widgets::after { left: 2.5rem; }
+}

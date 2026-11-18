@@ -1,5 +1,5 @@
 - logo:
-    icon: si-asus
+    icon: mdi-star-four-points
 - datetime:
     format:
       date: "dd LLL yyyy"

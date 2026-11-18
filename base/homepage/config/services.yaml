@@ -1,10 +1,54 @@
-- Infrastructure:
+- Passerelle:
     - Kubernetes Cluster:
         icon: si-kubernetes
         href: http://{{HOMEPAGE_VAR_MASTER_IP}}:30080
         description: "Statut du cluster MicroK8s"
 
-- Outils:
+# Memes requetes que le dashboard Grafana "Noeuds du cluster".
+# CPU calcule en proportion (1 - idle/total) : juste meme pour la VM VirtualBox,
+# contrairement au widget kubernetes (metrics-server).
+- Ingénierie:
+    - csiaoh (master):
+        icon: si-asus
+        href: http://{{HOMEPAGE_VAR_MASTER_IP}}:30090/d/homelab-noeuds
+        description: "Laptop Asus"
+        widget:
+          type: prometheusmetric
+          url: http://prometheus-service:9090
+          refreshInterval: 15000
+          metrics:
+            - label: CPU
+              query: round(100 * (1 - sum(rate(node_cpu_seconds_total{instance="csiaoh",mode="idle"}[5m])) / sum(rate(node_cpu_seconds_total{instance="csiaoh"}[5m]))))
+              suffix: "%"
+            - label: RAM
+              query: round(100 * (1 - node_memory_MemAvailable_bytes{instance="csiaoh"} / node_memory_MemTotal_bytes{instance="csiaoh"}))
+              suffix: "%"
+            - label: Temp.
+              query: round(max(node_hwmon_temp_celsius{instance="csiaoh"}))
+              suffix: "°C"
+            - label: Uptime
+              query: round((time() - node_boot_time_seconds{instance="csiaoh"}) / 3600)
+              suffix: " h"
+    - vmubuntu (worker):
+        icon: si-virtualbox
+        href: http://{{HOMEPAGE_VAR_MASTER_IP}}:30090/d/homelab-noeuds
+        description: "VM VirtualBox"
+        widget:
+          type: prometheusmetric
+          url: http://prometheus-service:9090
+          refreshInterval: 15000
+          metrics:
+            - label: CPU
+              query: round(100 * (1 - sum(rate(node_cpu_seconds_total{instance="vmubuntu",mode="idle"}[5m])) / sum(rate(node_cpu_seconds_total{instance="vmubuntu"}[5m]))))
+              suffix: "%"
+            - label: RAM
+              query: round(100 * (1 - node_memory_MemAvailable_bytes{instance="vmubuntu"} / node_memory_MemTotal_bytes{instance="vmubuntu"}))
+              suffix: "%"
+            - label: Uptime
+              query: round((time() - node_boot_time_seconds{instance="vmubuntu"}) / 3600)
+              suffix: " h"
+
+- Opérations:
     - GitHub Repository:
         icon: si-github
         href: https://github.com

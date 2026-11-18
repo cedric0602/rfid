@@ -1,4 +1,35 @@
-- Favoris:
+- Star Citizen:
+    - RSI:
+        - href: https://robertsspaceindustries.com
+          icon: mdi-rocket-launch
+          description: Site officiel
+    - Spectrum:
+        - href: https://robertsspaceindustries.com/spectrum
+          icon: mdi-forum
+          description: Forum et chat
+    - Erkul:
+        - href: https://www.erkul.games
+          icon: mdi-calculator-variant
+          description: Configs de vaisseaux
+    - UEX:
+        - href: https://uexcorp.space
+          icon: mdi-chart-line
+          description: Commerce et prix
+    - SC Wiki:
+        - href: https://starcitizen.tools
+          icon: mdi-book-open-variant
+          description: Wiki communautaire
+    - Spviewer:
+        - href: https://www.spviewer.eu
+          icon: mdi-crosshairs-gps
+          description: Stats et comparatifs
+
+- Starfleet:
+    - Memory Alpha:
+        - href: https://memory-alpha.fandom.com/fr
+          icon: mdi-star-four-points
+          description: Encyclopedie Star Trek
     - Google:
         - href: https://google.com
           icon: si-google
+          description: Recherche
