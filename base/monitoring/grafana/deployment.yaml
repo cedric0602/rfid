@@ -69,6 +69,12 @@ spec:
         - name: datasources
           mountPath: /etc/grafana/provisioning/datasources/datasources.yaml
           subPath: datasources.yaml
+        - name: dashboard-provider
+          mountPath: /etc/grafana/provisioning/dashboards/homelab.yaml
+          subPath: dashboards-provider.yaml
+        - name: dashboards
+          mountPath: /etc/grafana/dashboards
+          readOnly: true
         resources:
           limits:
             cpu: "0.5"
@@ -83,3 +89,9 @@ spec:
       - name: datasources
         configMap:
           name: grafana-datasources
+      - name: dashboard-provider
+        configMap:
+          name: grafana-dashboard-provider
+      - name: dashboards
+        configMap:
+          name: grafana-dashboards

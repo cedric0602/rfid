@@ -1,7 +1,7 @@
 # Remplace les Deployments xmrig-miner-asus / xmrig-miner-vm.
 # Plus de nodeName : le mineur tourne sur les noeuds portant le label
 #   miner=light  -> le master (1 thread, pour garder le laptop reactif)
-#   miner=full   -> la VM (5 threads)
+#   miner=full   -> la VM (3 threads sur 4 vCPU)
 # Quand la VM s'eteint puis revient, le pod repart tout seul.
 # Pool, wallet : overlays/home/vars.env. rig-id = nom du noeud.
 apiVersion: apps/v1
@@ -145,7 +145,7 @@ spec:
               key: XMR_WALLET
         resources:
           limits:
-            cpu: "5.2"
+            cpu: "3.2"   # 3 threads ; laisse 1 vCPU au systeme / a VirtualBox
             memory: "4Gi"
             hugepages-2Mi: "2560Mi"
           requests:

@@ -20,3 +20,9 @@ configMapGenerator:
   - name: grafana-datasources
     files:
       - grafana/datasources.yaml
+  - name: grafana-dashboard-provider
+    files:
+      - grafana/dashboards-provider.yaml
+  - name: grafana-dashboards
+    files:
+      - grafana/dashboards/noeuds.json

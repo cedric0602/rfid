@@ -1,0 +1,12 @@
+# Charge automatiquement les dashboards JSON de la ConfigMap "grafana-dashboards".
+# Pour en ajouter un : depose le .json dans grafana/dashboards/ et ajoute-le
+# dans base/monitoring/kustomization.yaml (configMapGenerator grafana-dashboards).
+apiVersion: 1
+providers:
+  - name: homelab
+    folder: Homelab
+    type: file
+    disableDeletion: true
+    allowUiUpdates: false
+    options:
+      path: /etc/grafana/dashboards
