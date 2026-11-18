@@ -31,7 +31,8 @@ Worker : VM Ubuntu (noeud `vmubuntu`), arretee au moins 1 fois par semaine.
    microk8s kubectl label node vmubuntu miner=full --overwrite
 
 2. Addons necessaires :
-   microk8s enable dns hostpath-storage metrics-server
+   microk8s enable dns hostpath-storage metrics-server ingress
+   sudo usermod -aG microk8s $USER   # puis deconnexion/reconnexion (fait aussi par site.yaml)
 
 3. (Optionnel mais recommande) mot de passe admin Grafana, AVANT le 1er demarrage
    avec stockage persistant (il n'est lu qu'a la creation de la base) :
@@ -55,6 +56,7 @@ Ensuite, chaque `git push` sur main redeploie automatiquement (voir .github/work
 - IP du master, pool, wallet  -> overlays/home/vars.env
 - Version d'une image         -> overlays/home/kustomization.yaml (section `images`)
 - IP des machines (SSH)       -> provisioning/inventory/hosts.yaml
+                                 (+ NODE_IP / SSH_USER en tete de provisioning/scripts/vm-stop.sh)
 - Hugepages                   -> provisioning/group_vars/all.yml
 
 Les tags d'images fournis sont des EXEMPLES : mets les dernieres versions stables
@@ -68,8 +70,11 @@ Depuis le master :
   # redemarre la VM, puis :
   ./provisioning/scripts/vm-start.sh    # attend Ready + uncordon
 
-Meme si tu oublies ces scripts, rien ne casse : seuls des DaemonSets tournent sur la
-VM, ils reviennent seuls. Le master (monitoring, homepage) n'est pas affecte.
+Nos applis sur la VM ne sont que des DaemonSets (ils reviennent seuls) et le monitoring
+et Homepage restent sur le master. MAIS les pods systeme de MicroK8s (coredns,
+metrics-server, hostpath-provisioner) peuvent tourner sur la VM : sans vm-stop.sh
+(qui les deplace via le drain), DNS / widget Kubernetes peuvent etre en panne ~5 min.
+Utilise donc les scripts.
 Dans Grafana/Prometheus, la VM apparaitra "down" pendant l'arret : c'est normal.
 Si tu crees une alerte "noeud down", mets un delai (ex: 30 min) ou un silence.
 

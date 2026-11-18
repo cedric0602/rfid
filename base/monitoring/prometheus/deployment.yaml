@@ -37,17 +37,22 @@ spec:
         - --web.enable-lifecycle
         ports:
         - containerPort: 9090
+        # Laisse jusqu'a 5 min pour relire le WAL apres un redemarrage
+        startupProbe:
+          httpGet:
+            path: /-/ready
+            port: 9090
+          periodSeconds: 10
+          failureThreshold: 30
         readinessProbe:
           httpGet:
             path: /-/ready
             port: 9090
-          initialDelaySeconds: 10
           periodSeconds: 10
         livenessProbe:
           httpGet:
             path: /-/healthy
             port: 9090
-          initialDelaySeconds: 30
           periodSeconds: 20
           failureThreshold: 3
         volumeMounts:
@@ -59,7 +64,7 @@ spec:
         resources:
           limits:
             cpu: "0.5"
-            memory: "512Mi"
+            memory: "1Gi"
           requests:
             cpu: "0.1"
             memory: "256Mi"

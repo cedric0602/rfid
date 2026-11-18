@@ -23,6 +23,14 @@
         name: microk8s
         classic: true
 
+    # Pour utiliser "microk8s kubectl" sans sudo (toi et le runner CI).
+    # Effectif a la prochaine session : le playbook, lui, passe par sudo.
+    - name: Ajouter l'utilisateur au groupe microk8s
+      ansible.builtin.user:
+        name: "{{ ansible_user }}"
+        groups: microk8s
+        append: true
+
     - name: Attente du demarrage de MicroK8s
       ansible.builtin.command: microk8s status --wait-ready
       changed_when: false
@@ -34,6 +42,10 @@
     # Necessaire pour que le kubelet voie les hugepages
     - name: Redemarrer MicroK8s
       ansible.builtin.command: snap restart microk8s
+      notify: Attendre MicroK8s
+
+    - name: Attendre MicroK8s
+      ansible.builtin.command: microk8s status --wait-ready
 
 # ------------------------------------------------------------------
 # 2) Master : laptop utilise comme serveur
@@ -84,13 +96,13 @@
         - dns
         - hostpath-storage
         - metrics-server
+        - ingress
       changed_when: false
 
     - name: Poser les labels du master (utilises par les nodeSelector)
       ansible.builtin.command: >
         microk8s kubectl label node {{ inventory_hostname }}
         homelab/role=master miner=light --overwrite
-      become: false
       changed_when: false
 
   handlers:
@@ -112,7 +124,6 @@
       delegate_to: localhost
       register: cluster_nodes
       changed_when: false
-      become: false
 
     - name: Generation du jeton et jointure (si le noeud n'est pas present)
       when: ('node/' ~ inventory_hostname) not in cluster_nodes.stdout_lines
@@ -121,7 +132,6 @@
           ansible.builtin.command: microk8s add-node --token-ttl 600
           delegate_to: localhost
           register: add_node_output
-          become: false
 
         - name: Extraction de la commande de jointure
           ansible.builtin.set_fact:
@@ -134,7 +144,6 @@
       ansible.builtin.command: >
         microk8s kubectl label node {{ inventory_hostname }} miner=full --overwrite
       delegate_to: localhost
-      become: false
       register: label_result
       retries: 12
       delay: 5

@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   name: homepage-ingress
 spec:
-  ingressClassName: traefik
+  ingressClassName: public   # classe de l'addon "ingress" (nginx) de MicroK8s
   rules:
   - http:
       paths:

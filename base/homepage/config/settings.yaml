@@ -1,5 +1,5 @@
 title: "Mon Serveur Asus plop"
-background: https://unsplash.com
+# background: doit etre l'URL d'une IMAGE (ex: https://images.unsplash.com/photo-xxxx)
 theme: dark
 headerStyle: boxed
 layout:

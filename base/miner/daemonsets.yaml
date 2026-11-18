@@ -72,7 +72,8 @@ spec:
             hugepages-2Mi: "2560Mi"
           requests:
             cpu: "0.2"
-            memory: "2600Mi"
+            # Le dataset RandomX (~2 Go) est dans les hugepages, pas dans "memory"
+            memory: "512Mi"
             hugepages-2Mi: "2560Mi"
         volumeMounts:
         - mountPath: /dev/hugepages
@@ -149,7 +150,7 @@ spec:
             hugepages-2Mi: "2560Mi"
           requests:
             cpu: "0.2"
-            memory: "2600Mi"
+            memory: "512Mi"
             hugepages-2Mi: "2560Mi"
         volumeMounts:
         - mountPath: /dev/hugepages

@@ -30,11 +30,11 @@ spec:
             configMapKeyRef:
               name: cluster-vars
               key: MASTER_IP
+        # Format hote:port. 30080 = NodePort, sans port = acces via l'Ingress (port 80).
+        # localhost:3000 et 127.0.0.1:3000 sont deja autorises par defaut.
+        # En cas de souci, "*" desactive la verification.
         - name: HOMEPAGE_ALLOWED_HOSTS
-          value: "$(HOMEPAGE_VAR_MASTER_IP),localhost,127.0.0.1"
-        # Conserve de l'ancienne version ; a retirer si HOMEPAGE_ALLOWED_HOSTS suffit.
-        - name: HOMEPAGE_VAR_UNSAFE_DISABLE_HOST_VALIDATION
-          value: "true"
+          value: "$(HOMEPAGE_VAR_MASTER_IP):30080,$(HOMEPAGE_VAR_MASTER_IP)"
         # tcpSocket plutot qu'httpGet : la validation du Host de Homepage
         # pourrait rejeter les sondes du kubelet.
         readinessProbe:
