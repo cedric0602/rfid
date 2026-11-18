@@ -5,7 +5,7 @@ kind: Ingress
 metadata:
   name: grafana-ingress
 spec:
-  ingressClassName: public   # classe de l'addon "ingress" (nginx) de MicroK8s
+  ingressClassName: traefik   # addon "ingress" de MicroK8s (Traefik)
   rules:
   - host: grafana.local
     http:
