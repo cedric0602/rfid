@@ -1,0 +1,78 @@
+# IA d'Immich (visages, recherche "chien sur la plage"...).
+# Tourne HORS du master (trop faible) : sur la VM, qui a 4 coeurs et l'AVX2.
+# Quand la VM est eteinte, le pod attend ; Immich continue de fonctionner
+# (envoi et consultation des photos) et l'analyse reprend au retour de la VM.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: immich-machine-learning
+  labels:
+    app: immich-machine-learning
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: immich-machine-learning
+  template:
+    metadata:
+      labels:
+        app: immich-machine-learning
+    spec:
+      priorityClassName: apps
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: homelab/role
+                operator: NotIn
+                values: ["master"]
+      containers:
+      - name: immich-machine-learning
+        image: ghcr.io/immich-app/immich-machine-learning
+        envFrom:
+        - configMapRef:
+            name: immich-env
+        env:
+        - name: MACHINE_LEARNING_MODEL_REVISION   # comme le docker-compose officiel
+          value: "v2"
+        ports:
+        - containerPort: 3003
+        startupProbe:
+          httpGet:
+            path: /ping
+            port: 3003
+          periodSeconds: 10
+          failureThreshold: 30
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: 3003
+          periodSeconds: 15
+        volumeMounts:
+        # Cache des modeles : re-telecharges apres chaque redemarrage de la VM
+        # (quelques centaines de Mo). Suffisant pour un test.
+        - name: cache
+          mountPath: /cache
+        resources:
+          requests:
+            cpu: "0.2"
+            memory: "512Mi"
+          limits:
+            cpu: "2"
+            memory: "3Gi"
+      volumes:
+      - name: cache
+        emptyDir:
+          sizeLimit: 5Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: immich-machine-learning
+spec:
+  selector:
+    app: immich-machine-learning
+  ports:
+  - port: 3003
+    targetPort: 3003

@@ -69,6 +69,11 @@
             - label: "Temp. CPU"
               query: "round(avg(node_hwmon_temp_celsius))"
               suffix: "°C"
+    - Immich Photos:
+        icon: immich.png
+        href: http://{{HOMEPAGE_VAR_MASTER_IP}}:30283
+        description: "Mes photos (test)"
+        siteMonitor: http://immich-server.immich.svc.cluster.local:2283/api/server/ping
     - Monero Mining Pool:
         icon: si-monero
         href: https://supportxmr.com

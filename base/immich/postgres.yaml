@@ -1,0 +1,93 @@
+# Image PostgreSQL imposee par Immich (avec extensions de recherche vectorielle).
+# Version + digest recopies du docker-compose officiel Immich v3.4.2 :
+# ne la change QUE si les notes de version d'Immich le demandent.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: immich-postgres
+  labels:
+    app: immich-postgres
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate          # volume RWO
+  selector:
+    matchLabels:
+      app: immich-postgres
+  template:
+    metadata:
+      labels:
+        app: immich-postgres
+    spec:
+      priorityClassName: apps
+      nodeSelector:
+        homelab/role: master
+      containers:
+      - name: postgres
+        image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0@sha256:bcf63357191b76a916ae5eb93464d65c07511da41e3bf7a8416db519b40b1c23
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            configMapKeyRef:
+              name: immich-env
+              key: DB_USERNAME
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              name: immich-env
+              key: DB_DATABASE_NAME
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: immich-db
+              key: DB_PASSWORD
+        - name: POSTGRES_INITDB_ARGS
+          value: "--data-checksums"
+        # Le laptop a un disque dur (pas de SSD) : reglages adaptes
+        - name: DB_STORAGE_TYPE
+          value: "HDD"
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        ports:
+        - containerPort: 5432
+        readinessProbe:
+          exec:
+            command: ["sh", "-c", "pg_isready -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\""]
+          periodSeconds: 10
+        livenessProbe:
+          exec:
+            command: ["sh", "-c", "pg_isready -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\""]
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          failureThreshold: 5
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgresql/data
+        - name: shm               # equivalent du "shm_size: 128mb" de docker-compose
+          mountPath: /dev/shm
+        resources:
+          requests:
+            cpu: "0.1"
+            memory: "256Mi"
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: immich-db
+      - name: shm
+        emptyDir:
+          medium: Memory
+          sizeLimit: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: immich-postgres
+spec:
+  selector:
+    app: immich-postgres
+  ports:
+  - port: 5432
+    targetPort: 5432

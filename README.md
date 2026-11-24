@@ -51,6 +51,21 @@ Worker : VM Ubuntu (noeud `vmubuntu`), arretee au moins 1 fois par semaine.
 
 Ensuite, chaque `git push` sur main redeploie automatiquement (voir .github/workflows).
 
+## Immich (photos) - en test
+
+- Serveur + base + cache sur le master, IA (visages, recherche) sur la VM.
+- Acces : http://<IP du master>:30283 (site web et appli mobile).
+- Le mot de passe de la base n'est pas dans git. A creer UNE fois avant le 1er deploiement :
+    microk8s kubectl create namespace immich
+    microk8s kubectl -n immich create secret generic immich-db \
+      --from-literal=DB_PASSWORD="$(openssl rand -hex 24)"
+- Mise a jour : changer les 2 tags Immich dans overlays/home/kustomization.yaml
+  (et lire les notes de version : postgres/valkey sont figes dans base/immich).
+- NAS plus tard : seul le PVC `immich-library` (les photos) ira sur le NAS ;
+  la base `immich-db` doit rester en local.
+- Tout supprimer : microk8s kubectl delete namespace immich
+  (et retirer ../../base/immich de overlays/home/kustomization.yaml).
+
 ## Modifier une variable
 
 - IP du master, pool, wallet  -> overlays/home/vars.env

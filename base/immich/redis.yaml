@@ -1,0 +1,49 @@
+# Valkey (compatible Redis) : file d'attente des taches Immich.
+# Pas de stockage persistant : rien d'important n'y est garde.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: immich-redis
+  labels:
+    app: immich-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: immich-redis
+  template:
+    metadata:
+      labels:
+        app: immich-redis
+    spec:
+      priorityClassName: apps
+      nodeSelector:
+        homelab/role: master
+      containers:
+      - name: valkey
+        # Version + digest du docker-compose officiel Immich v3.4.2
+        image: docker.io/valkey/valkey:9@sha256:418652cfb58ef879d4978c33553735d7147016032d5aefaa14c828e611eb9dfd
+        ports:
+        - containerPort: 6379
+        readinessProbe:
+          exec:
+            command: ["sh", "-c", "valkey-cli ping | grep -q PONG"]
+          periodSeconds: 10
+        resources:
+          requests:
+            cpu: "0.05"
+            memory: "32Mi"
+          limits:
+            cpu: "0.5"
+            memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: immich-redis
+spec:
+  selector:
+    app: immich-redis
+  ports:
+  - port: 6379
+    targetPort: 6379

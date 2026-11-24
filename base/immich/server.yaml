@@ -1,0 +1,82 @@
+# Serveur Immich (API + site web + generation des miniatures).
+# Accessible sur http://<IP du master>:30283 (aussi pour l'appli mobile).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: immich-server
+  labels:
+    app: immich-server
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate          # volume RWO
+  selector:
+    matchLabels:
+      app: immich-server
+  template:
+    metadata:
+      labels:
+        app: immich-server
+    spec:
+      priorityClassName: apps
+      nodeSelector:
+        homelab/role: master
+      containers:
+      - name: immich-server
+        image: ghcr.io/immich-app/immich-server
+        envFrom:
+        - configMapRef:
+            name: immich-env
+        env:
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: immich-db
+              key: DB_PASSWORD
+        ports:
+        - containerPort: 2283
+        # Le 1er demarrage (migrations de la base sur disque dur) peut etre long
+        startupProbe:
+          httpGet:
+            path: /api/server/ping
+            port: 2283
+          periodSeconds: 10
+          failureThreshold: 60
+        readinessProbe:
+          httpGet:
+            path: /api/server/ping
+            port: 2283
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /api/server/ping
+            port: 2283
+          periodSeconds: 30
+          failureThreshold: 5
+        volumeMounts:
+        - name: library
+          mountPath: /data
+        resources:
+          requests:
+            cpu: "0.2"
+            memory: "512Mi"
+          limits:
+            cpu: "1.5"
+            memory: "2Gi"
+      volumes:
+      - name: library
+        persistentVolumeClaim:
+          claimName: immich-library
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: immich-server
+spec:
+  type: NodePort
+  selector:
+    app: immich-server
+  ports:
+  - port: 2283
+    targetPort: 2283
+    nodePort: 30283

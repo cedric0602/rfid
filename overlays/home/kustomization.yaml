@@ -6,6 +6,7 @@ resources:
   - ../../base/monitoring
   - ../../base/homepage
   - ../../base/miner
+  - ../../base/immich
 
 # Variables communes (IP, pool, wallet) -> ConfigMap "cluster-vars".
 # Kustomize ajoute un hash au nom : changer vars.env redemarre les pods concernes.
@@ -25,6 +26,12 @@ images:
     newTag: "v1.13.1"
   - name: ghcr.io/gethomepage/homepage
     newTag: "v2.8.0"
+  # Immich : server et machine-learning TOUJOURS a la meme version.
+  # (postgres et valkey sont figes dans base/immich, selon le compose officiel)
+  - name: ghcr.io/immich-app/immich-server
+    newTag: "v3.4.2"
+  - name: ghcr.io/immich-app/immich-machine-learning
+    newTag: "v3.4.2"
   - name: xmrig/xmrig
     newTag: "6.26.0"
 

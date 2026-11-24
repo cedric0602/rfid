@@ -1,0 +1,32 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Immich (photos facon Google Photos) - installation de TEST.
+# Tout est dans le namespace "immich" : pour tout supprimer d'un coup,
+#   microk8s kubectl delete namespace immich
+# (et retirer "../../base/immich" de overlays/home/kustomization.yaml).
+#
+# Le mot de passe de la base n'est PAS dans git. A creer une fois a la main :
+#   microk8s kubectl -n immich create secret generic immich-db \
+#     --from-literal=DB_PASSWORD="$(openssl rand -hex 24)"
+namespace: immich
+
+resources:
+  - namespace.yaml
+  - pvc.yaml
+  - postgres.yaml
+  - redis.yaml
+  - server.yaml
+  - machine-learning.yaml
+  - ingress.yaml
+
+# Variables communes aux pods Immich (hash : un changement redemarre les pods).
+configMapGenerator:
+  - name: immich-env
+    literals:
+      - TZ=Europe/Paris
+      - DB_HOSTNAME=immich-postgres
+      - DB_USERNAME=postgres
+      - DB_DATABASE_NAME=immich
+      - REDIS_HOSTNAME=immich-redis
+      - IMMICH_MACHINE_LEARNING_URL=http://immich-machine-learning:3003
