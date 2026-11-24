@@ -63,6 +63,11 @@ Ensuite, chaque `git push` sur main redeploie automatiquement (voir .github/work
   (et lire les notes de version : postgres/valkey sont figes dans base/immich).
 - NAS plus tard : seul le PVC `immich-library` (les photos) ira sur le NAS ;
   la base `immich-db` doit rester en local.
+- Bibliotheque externe : D:\photos du PC Windows (partage SMB "photos", compte
+  Windows local "immich") monte en lecture seule sur le master dans /mnt/photos-externe
+  (ligne dans /etc/fstab, identifiants dans /root/.smb-photos). Si le PC etait eteint
+  au demarrage du master : sudo mount /mnt/photos-externe
+  Dans Immich : Administration > Bibliotheques externes > dossier /mnt/photos-externe
 - Tout supprimer : microk8s kubectl delete namespace immich
   (et retirer ../../base/immich de overlays/home/kustomization.yaml).
 

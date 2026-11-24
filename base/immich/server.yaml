@@ -56,6 +56,15 @@ spec:
         volumeMounts:
         - name: library
           mountPath: /data
+        # Bibliotheque externe : D:\photos du PC Windows, montee sur le master
+        # dans /mnt/photos-externe (partage reseau, voir README).
+        # Lecture seule : Immich ne peut rien modifier ni supprimer.
+        # HostToContainer : si le partage est monte apres le demarrage du pod
+        # (PC allume plus tard), Immich le voit sans redemarrer.
+        - name: photos-externe
+          mountPath: /mnt/photos-externe
+          readOnly: true
+          mountPropagation: HostToContainer
         resources:
           requests:
             cpu: "0.2"
@@ -67,6 +76,10 @@ spec:
       - name: library
         persistentVolumeClaim:
           claimName: immich-library
+      - name: photos-externe
+        hostPath:
+          path: /mnt/photos-externe
+          type: DirectoryOrCreate
 ---
 apiVersion: v1
 kind: Service
