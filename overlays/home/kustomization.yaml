@@ -15,17 +15,17 @@ configMapGenerator:
       - vars.env
 
 # Versions d'images centralisees ici (les manifests de base n'ont pas de tag).
-# EXEMPLES : remplace par les dernieres versions stables au moment du deploiement.
+# Mises a jour securite du 2026-11-24.
 images:
   - name: grafana/grafana
-    newTag: "11.4.0"
+    newTag: "12.4.16"
   - name: prom/prometheus
-    newTag: "v2.55.1"
+    newTag: "v3.16.0"
   - name: prom/node-exporter
-    newTag: "v1.8.2"
+    newTag: "v1.13.1"
   - name: ghcr.io/gethomepage/homepage
-    newTag: "v1.2.0"
+    newTag: "v2.8.0"
   - name: xmrig/xmrig
-    newTag: "latest"   # a figer des que tu connais le tag qui marche chez toi
+    newTag: "6.26.0"
 
 
