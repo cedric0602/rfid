@@ -54,6 +54,15 @@
   hosts: masters
   become: true
   tasks:
+    - name: Dossiers de configuration (absents sur une Ubuntu neuve)
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: "0755"
+      loop:
+        - /etc/systemd/logind.conf.d
+        - /etc/tlp.d
+
     - name: Ne pas s'eteindre quand on ferme l'ecran
       ansible.builtin.copy:
         dest: /etc/systemd/logind.conf.d/90-server-lid.conf
