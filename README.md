@@ -71,6 +71,28 @@ Ensuite, chaque `git push` sur main redeploie automatiquement (voir .github/work
 - Tout supprimer : microk8s kubectl delete namespace immich
   (et retirer ../../base/immich de overlays/home/kustomization.yaml).
 
+## Agent "rapport du jour" (Claude)
+
+Tous les jours a 8h, le master collecte l'etat du cluster (lecture seule : noeuds, pods,
+evenements, PVC, disques, montage photos), Claude le resume (sans aucun outil : il ne
+peut rien modifier) et le rapport part par mail. Le verdict (OK / A SURVEILLER / PROBLEME)
+est dans le sujet. Si Claude echoue, le mail part quand meme avec les donnees brutes.
+
+- Script : provisioning/scripts/agent-rapport.sh ; heure : `agent_heure` dans group_vars/all.yml
+- Installe par la partie 4 de provisioning/site.yaml (msmtp + timer systemd)
+
+Prerequis (une fois, sur le master, hors git) :
+1. Claude Code en ligne de commande : `curl -fsSL https://claude.ai/install.sh | bash`
+   puis `claude` une fois pour se connecter.
+2. Mot de passe d'application Google (validation en 2 etapes obligatoire) :
+   https://myaccount.google.com/apppasswords -> le coller dans `~/.msmtprc` (ligne password).
+3. Destinataire : `MAIL_TO=...` dans `~/.config/agent-rapport.env`
+
+Tester :
+    DRY_RUN=1 provisioning/scripts/agent-rapport.sh    # affiche le rapport, sans mail
+    sudo systemctl start agent-rapport.service         # envoi reel
+    journalctl -u agent-rapport.service ; systemctl list-timers agent-rapport.timer
+
 ## Modifier une variable
 
 - IP du master, pool, wallet  -> overlays/home/vars.env

@@ -6,3 +6,7 @@ hugepages_count: 1280
 # Seuils de charge de la batterie du laptop master (si le materiel le supporte)
 battery_start_threshold: 75
 battery_stop_threshold: 80
+
+# Agent "rapport du jour" (provisioning/scripts/agent-rapport.sh)
+agent_user: "bestell48"          # compte local du master qui lance l'agent
+agent_heure: "*-*-* 08:00:00"    # format systemd OnCalendar

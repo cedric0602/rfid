@@ -150,3 +150,63 @@
       until: label_result.rc == 0
       changed_when: false
 
+
+# ------------------------------------------------------------------
+# 4) Agent "rapport du jour" : etat du cluster resume par Claude, envoye par mail
+#    Prerequis manuels (une fois) : voir README, section "Agent rapport du jour"
+# ------------------------------------------------------------------
+- name: Agent rapport du jour
+  hosts: masters
+  become: true
+  tasks:
+    - name: Installer msmtp (envoi de mail SMTP)
+      ansible.builtin.apt:
+        name: [msmtp, ca-certificates]
+        state: present
+
+    - name: Service systemd de l'agent
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/agent-rapport.service
+        mode: "0644"
+        content: |
+          [Unit]
+          Description=Agent rapport du jour (homelab)
+          Wants=network-online.target
+          After=network-online.target snap.microk8s.daemon-kubelite.service
+
+          [Service]
+          Type=oneshot
+          User={{ agent_user }}
+          Environment=HOME=/home/{{ agent_user }}
+          Environment=PATH=/home/{{ agent_user }}/.local/bin:/snap/bin:/usr/local/bin:/usr/bin:/bin
+          ExecStart={{ playbook_dir }}/scripts/agent-rapport.sh
+          TimeoutStartSec=15min
+      notify: Recharger systemd
+
+    - name: Timer systemd de l'agent
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/agent-rapport.timer
+        mode: "0644"
+        content: |
+          [Unit]
+          Description=Lance l'agent rapport du jour
+
+          [Timer]
+          OnCalendar={{ agent_heure }}
+          Persistent=true
+
+          [Install]
+          WantedBy=timers.target
+      notify: Recharger systemd
+
+    - name: Activer le timer
+      ansible.builtin.systemd:
+        name: agent-rapport.timer
+        enabled: true
+        state: started
+        daemon_reload: true
+
+  handlers:
+    - name: Recharger systemd
+      ansible.builtin.systemd:
+        daemon_reload: true
