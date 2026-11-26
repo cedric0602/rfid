@@ -62,7 +62,8 @@ collect() {
 PROMPT="Tu es l'agent de surveillance d'un petit homelab MicroK8s (master = laptop 'csiaoh',
 worker = VM 'vmubuntu' qui peut etre eteinte volontairement 1 fois par semaine : ce n'est
 pas une panne grave). Applis : Homepage, Prometheus, Grafana, node-exporter, xmrig (mineur),
-Immich (photos, namespace immich).
+Immich (photos, namespace immich ; il peut etre volontairement EN PAUSE avec 0 replica :
+ce n'est pas un probleme, signale-le juste en une ligne dans le resume).
 
 A partir des donnees brutes ci-dessous, ecris en francais un rapport court pour un mail :
 1. Premiere ligne : un verdict global parmi  OK / A SURVEILLER / PROBLEME.

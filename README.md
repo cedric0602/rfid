@@ -53,6 +53,9 @@ Ensuite, chaque `git push` sur main redeploie automatiquement (voir .github/work
 
 ## Immich (photos) - en test
 
+- EN PAUSE depuis le 2026-11-26 (bloc `replicas` a 0 dans overlays/home/kustomization.yaml).
+  Relancer : supprimer ce bloc puis push. Photos et base restent sur les PVC.
+
 - Serveur + base + cache sur le master, IA (visages, recherche) sur la VM.
 - Acces : http://<IP du master>:30283 (site web et appli mobile).
 - Le mot de passe de la base n'est pas dans git. A creer UNE fois avant le 1er deploiement :

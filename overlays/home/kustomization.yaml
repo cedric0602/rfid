@@ -10,6 +10,18 @@ resources:
 
 # Variables communes (IP, pool, wallet) -> ConfigMap "cluster-vars".
 # Kustomize ajoute un hash au nom : changer vars.env redemarre les pods concernes.
+# Immich EN PAUSE (0 pod). Photos et base restent sur les PVC, rien n'est perdu.
+# Pour le relancer : supprimer ce bloc "replicas" (ou mettre count: 1) puis push.
+replicas:
+  - name: immich-server
+    count: 0
+  - name: immich-machine-learning
+    count: 0
+  - name: immich-redis
+    count: 0
+  - name: immich-postgres
+    count: 0
+
 configMapGenerator:
   - name: cluster-vars
     envs:
