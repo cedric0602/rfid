@@ -7,10 +7,12 @@ all:
       hosts:
         csiaoh:
           ansible_connection: local   # on lance le playbook depuis le master
+          ansible_user: "bestell48"
     workers:
       hosts:
         vmubuntu:
           ansible_host: "192.168.0.52"
+          ansible_user: "cedric"
         # mini-pc:                    # decommente et change l'IP pour un futur worker
         #   ansible_host: "192.168.2.140"
 

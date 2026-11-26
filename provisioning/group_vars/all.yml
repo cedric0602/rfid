@@ -1,3 +1,4 @@
+# Compte SSH par defaut ; chaque machine a le sien dans inventory/hosts.yaml
 ansible_user: "cedric"
 
 # 2560Mi / 2Mi = 1280 pages (voir resources.hugepages-2Mi du mineur)
